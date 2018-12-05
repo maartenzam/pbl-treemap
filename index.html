@@ -4,9 +4,7 @@
 <style>
 
 body {
-  font: 14px sans-serif;
   position: relative;
-  font-family: 'Arial';
 }
 
 .node {
@@ -27,11 +25,15 @@ body {
   stroke-linecap: butt;		
   stroke-linejoin: miter;
 }
-
-img {
-  width: 238px;
+.label-first-level {
+  padding: 4px;
+  line-height: 1em;
+  font-size: 26px;
+  font-weight: bold;
+  font-family: "Roboto Condensed";		
+  color: white;
+  opacity: 1;
 }
-
 </style>
 <body>
   <div class="slidecontainer">
@@ -135,9 +137,8 @@ var color = d3.scaleOrdinal()
 d3.csv("data/treemapdata.csv").then(function(data){
 
   data.forEach(function(d){
-    d.oppervlakte = +d.oppervlakte;
+    d.oppervlakte = +d.Waarde;
   })
-
   filtereddata = data;
 
   function draw(filterdata, width, height){
@@ -170,8 +171,8 @@ d3.csv("data/treemapdata.csv").then(function(data){
     svg.call(sgreen); 
 
     let nest = d3.nest()
-      .key((d) => d.Dierplant)
-      .key((d) => d.Groep)
+      .key((d) => d.Product)
+      .key((d) => d.Locatie)
       .rollup(function(leaves) {
               return d3.sum(leaves, function(d) {return parseFloat(d.oppervlakte);})
           });
@@ -181,7 +182,6 @@ d3.csv("data/treemapdata.csv").then(function(data){
       .sort(function(a, b) { return b.height - a.height || b.value - a.value; });
 
     treemap(root);
-
     let nodes = svg
       .selectAll(".node")
       .data(root.leaves())
@@ -290,6 +290,39 @@ d3.csv("data/treemapdata.csv").then(function(data){
         if((d.x1  - d.x0) < bbox.width || (d.y1  - d.y0) < bbox.height){
             return 0;
         }
+    });
+    let labelsFirstLevel = svg.selectAll("text.label-first-level").data(root.children)
+      .enter().append("g")
+      .attr("class", "label-first-level")
+      .attr("transform", (d) => `translate(${d.x0 + (d.x1 - d.x0)/ 2}, ${d.y0 + (d.y1 - d.y0)/ 2})`);
+      /*.attr("x", function (d) {
+            return (d.x1 - d.x0) / 2;
+        })
+        .attr("y", function (d) {
+            return (d.y1 - d.y0) / 2;
+        })*/
+    let labelsFirstLevelText = labelsFirstLevel.append("text")
+        .attr('dy', '.4em')
+        .attr("text-anchor", "middle")
+        .text((d) => d.data.key);
+
+    labelsFirstLevelText.attr("transform", function(d){
+        let bbox  = this.getBBox();
+        if((d.x1  - d.x0) < bbox.width){
+          let x = (d.x1 - d.x0) / 2;
+          let y = (d.y1 - d.y0) / 2;
+          //return `rotate(90,${x},${y})`;
+          return `rotate(90,0,0)`;
+        }
+        else{ return "rotate(0)"; }
+      })
+
+    labelsFirstLevelText.style("opacity", function(d){
+        let bbox  = this.getBoundingClientRect();
+        if((d.x1  - d.x0) < bbox.width || (d.y1  - d.y0) < bbox.height){
+            return 0;
+        }
+        else{return 0.5}
     });
 
   }
