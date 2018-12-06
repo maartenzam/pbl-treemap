@@ -1,0 +1,105 @@
+@font-face {
+	font-family: "Sans";
+	src: url("fonts/ROsanswebtextregular.eot?") format("embedded-opentype"),
+	     url("fonts/ROsanswebtextregular.woff") format("opentype");
+	font-style: normal;
+	font-weight: normal;
+}
+@font-face {
+	font-family: "Sans";
+	src: url("fonts/ROsanswebtextitalic.eot?") format("embedded-opentype"),
+	     url("fonts/ROsanswebtextitalic.woff") format("opentype");
+	font-style: italic;
+	font-weight: normal;
+}
+@font-face {
+	font-family: "Sans";
+	src: url("fonts/ROsanswebtextbold.eot?") format("embedded-opentype"),
+	     url("fonts/ROsanswebtextbold.woff") format("opentype");
+	font-weight: bold;
+	font-style: normal;
+}
+@font-face {
+	font-family: "Serif";
+	src: url("fonts/ROserifwebregular.eot?") format("embedded-opentype"),
+	     url("fonts/ROserifwebregular.woff") format("opentype");
+	font-style: normal;
+	font-weight: normal;
+}
+@font-face {
+	font-family: "Serif";
+	src: url("fonts/ROserifwebitalic.eot?") format("embedded-opentype"),
+	     url("fonts/ROserifwebitalic.woff") format("opentype");
+	font-style: italic;
+	font-weight: normal;
+}
+@font-face {
+	font-family: "Serif";
+	src: url("fonts/ROserifwebbold.eot?") format("embedded-opentype"),
+	     url("fonts/ROserifwebbold.woff") format("opentype");
+	font-weight: bold;
+	font-style: normal;
+}
+
+body {
+  font-family: "Sans";
+}
+
+.legend-column {
+    display: inline-block;
+    font-weight: bold;
+    margin-left: 6px;
+    margin-right: 20px;
+}
+.legend-column p {
+    margin-bottom: 8px;
+}
+
+.legend-item {
+    color: white;
+    padding: 10px;
+    width: 70px;
+    text-align: center;
+    display: inline-block;
+    margin: 0;
+}
+
+.plant-buiten {
+    background-color: #A2A448;
+}
+
+.plant-eu {
+    background-color: #B8B972;
+}
+
+.plant-nl {
+    background-color: #CFCF9F;
+    color: #000000;
+}
+
+.dier-buiten {
+    background-color: #0087BE;
+}
+
+.dier-eu {
+    background-color: #009CDF;
+}
+
+.dier-nl {
+    background-color: #9CCEF3;
+    color: #000000;
+}
+
+div.tooltip {	
+    padding: 12px;
+    position: absolute;		
+    width: 250px;																
+    background: #00374D;	
+    border: 0px;				
+    pointer-events: none;
+    color: #ffffff;			
+}
+
+svg image {
+    pointer-events: none;
+}

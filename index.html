@@ -1,93 +1,26 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
-<style>
+<link href="style/style.css" rel="stylesheet">
 
-@font-face {
-	font-family: "Sans";
-	src: url("fonts/ROsanswebtextregular.eot?") format("embedded-opentype"),
-	     url("fonts/ROsanswebtextregular.woff") format("opentype");
-	font-style: normal;
-	font-weight: normal;
-}
-@font-face {
-	font-family: "Sans";
-	src: url("fonts/ROsanswebtextitalic.eot?") format("embedded-opentype"),
-	     url("fonts/ROsanswebtextitalic.woff") format("opentype");
-	font-style: italic;
-	font-weight: normal;
-}
-@font-face {
-	font-family: "Sans";
-	src: url("fonts/ROsanswebtextbold.eot?") format("embedded-opentype"),
-	     url("fonts/ROsanswebtextbold.woff") format("opentype");
-	font-weight: bold;
-	font-style: normal;
-}
-@font-face {
-	font-family: "Serif";
-	src: url("fonts/ROserifwebregular.eot?") format("embedded-opentype"),
-	     url("fonts/ROserifwebregular.woff") format("opentype");
-	font-style: normal;
-	font-weight: normal;
-}
-@font-face {
-	font-family: "Serif";
-	src: url("fonts/ROserifwebitalic.eot?") format("embedded-opentype"),
-	     url("fonts/ROserifwebitalic.woff") format("opentype");
-	font-style: italic;
-	font-weight: normal;
-}
-@font-face {
-	font-family: "Serif";
-	src: url("fonts/ROserifwebbold.eot?") format("embedded-opentype"),
-	     url("fonts/ROserifwebbold.woff") format("opentype");
-	font-weight: bold;
-	font-style: normal;
-}
-
-body {
-  
-  position: relative;
-  font-family: "Sans";
-}
-
-.node {
-  box-sizing: border-box;
-  position: absolute;
-  overflow: hidden;
-}
-
-.node-label {
-  padding: 4px;
-  line-height: 1em;
-  font-size: 13px;
-  font-family: "Sans";
-  paint-order: stroke;		
-  stroke: #ffffff;		
-  stroke-width: 2;		
-  stroke-opacity: 0.5;		
-  stroke-linecap: butt;		
-  stroke-linejoin: miter;
-}
-.label-first-level {
-  padding: 4px;
-  line-height: 1em;
-  font-size: 26px;
-  font-weight: bold;
-  font-family: "Sans";		
-  color: white;
-  opacity: 1;
-}
-</style>
 <body>
   <div class="slidecontainer">
     Width: <input type="text" value="960" class="slider" id="width">
     Height: <input type="text" value="600" class="slider" id="height">
   </div>
-  <!--svg id="test"></svg-->
-  <h2>Naar product</h2>
-  <div>
+  <div id="legend">
+    <div class="legend-column">
+        <p>Dierlijk</p>
+        <div class="legend-item dier-buiten">Buiten EU</div>
+        <div class="legend-item dier-eu">EU</div>
+        <div  class="legend-item dier-nl">Nederland</div>
+    </div>
+    <div class="legend-column">
+      <p>Plantaardig</p>
+      <div class="legend-item plant-buiten">Buiten EU</div>
+      <div class="legend-item plant-eu">EU</div>
+      <div  class="legend-item plant-nl">Nederland</div>
+    </div>
+  </div>
     <svg id = "viz">
         <defs>
             <pattern id="diagonalHatch" patternUnits="userSpaceOnUse" width="20" height="20">
@@ -97,10 +30,10 @@ body {
         </defs>
     </svg>
   </div>
-  <h2>Naar herkomst</h2>
+  <!--h2>Naar herkomst</h2>
   <div>
       <svg id = "viz2"></svg>
-  </div>
+  </div-->
 
 <script src="//d3js.org/d3.v5.min.js"></script>
 <script src="js/textures.js"></script>

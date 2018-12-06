@@ -100,6 +100,9 @@ const dierplant = {
     "vegi": "Plantaardig"
 }
 
+var tooltip = d3.select("body").append("div")	
+    .attr("class", "tooltip")				
+    .style("opacity", 0);
 
 d3.csv("data/treemapdata.csv").then(function(data){
 
@@ -172,11 +175,38 @@ d3.csv("data/treemapdata.csv").then(function(data){
             .enter().append("g")
             .attr("transform", (d) => `translate(${d.x0},${d.y0})`);
     }
+    console.log(root.leaves());
     nodes.append("rect")
       .attr("class", "node")
       .attr("width", (d) => d.x1 - d.x0)
       .attr("height", (d) => d.y1 - d.y0)
-      .style("fill", (d) => colors(dierplant[d.parent.data.key] + "-" + d.data.key));
+      .style("fill", (d) => colors(dierplant[d.parent.data.key] + "-" + d.data.key))
+      .on("mouseover", function(d) {
+        d3.select(this)
+            .style("stroke", "#00374D")
+            .style("stroke-width", 1);
+        tooltip
+            .html(`<h2>${d.parent.data.key}</h2>
+                <p>Locatie: ${d.data.key}</p>
+                <p>Landgebruik: ${d.data.value} m2/persoon/jaar</p>`)
+            .transition()		
+            .duration(200)		
+            .style("opacity", 1)			
+            .style("left", (d3.event.pageX + 28) + "px")		
+            .style("top", (d3.event.pageY - 28) + "px");	
+        })
+        .on("mousemove", function(d) {		
+            tooltip	
+                .style("left", (d3.event.pageX + 28) + "px")		
+                .style("top", (d3.event.pageY - 28) + "px");	
+            })					
+      .on("mouseout", function(d) {	
+        d3.select(this)
+            .style("stroke-width", 0);	
+        tooltip.transition()		
+            .duration(500)		
+            .style("opacity", 0);	
+    });
 
     //Grassland
     nodes.append("rect")
@@ -197,7 +227,8 @@ d3.csv("data/treemapdata.csv").then(function(data){
         else{ return d.y1 - d.y0; }
       })
       .style("fill", "url('#diagonalHatch')")
-      .style("opacity", 0.4);
+      .style("opacity", 0.4)
+      .style("pointer-events", "none");
   
    /*let labels = nodes.append("text")
       .attr("class", "node-label")
