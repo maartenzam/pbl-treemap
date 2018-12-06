@@ -82,17 +82,30 @@ let sgreen = textures.lines()
   .lighter()
   .stroke("#00ff00");
 
-let antique = ["#855C75","#D9AF6B","#AF6458","#736F4C","#526A83","#625377","#68855C","#9C9C5E","#A06177","#8C785D","#467378","#7C7C7C"]
-let prism = ["#5F4690","#1D6996","#38A6A5","#0F8554","#73AF48","#EDAD08","#E17C05","#CC503E","#94346E","#6F4070","#994E95","#666666"]
-let bold = ["#7F3C8D","#11A579","#3969AC","#F2B701","#E73F74","#80BA5A","#E68310","#008695","#CF1C90","#f97b72","#4b4b8f","#A5AA99"]
+const colors = d3.scaleOrdinal()
+    .range(["#9CCEF3", "#009CDF", "#0087BE", "#CFCF9F", "#B8B972", "#A2A448"])
+    .domain(["Dierlijk-NL", "Dierlijk-EU", "Dierlijk-Buiten EU", "Plantaardig-NL", "Plantaardig-EU", "Plantaardig-Buiten EU"]);
 
-var color = d3.scaleOrdinal()
-    .range(bold);
+const dierplant = {
+    "rundvlees": "Dierlijk",
+    "varkensvlees": "Dierlijk",
+    "zuivel": "Dierlijk",
+    "kip & ei": "Dierlijk",
+    "agf": "Plantaardig",
+    "vet & snack": "Plantaardig",
+    "dranken": "Plantaardig",
+    "brood & graan": "Plantaardig",
+    "zoet & gebak": "Plantaardig",
+    "vis": "Dierlijk",
+    "vegi": "Plantaardig"
+}
+
 
 d3.csv("data/treemapdata.csv").then(function(data){
 
   data.forEach(function(d){
-    d.oppervlakte = +d.Waarde;
+    d.oppervlakte = +d.Totopp;
+    d.percgras = +d.Percgras;
   })
   filtereddata = data;
 
@@ -116,8 +129,8 @@ d3.csv("data/treemapdata.csv").then(function(data){
 
     var treemap = d3.treemap()
       .size([width, height])
-      .padding(1)
-      .round(true)
+      .paddingOuter(3)
+      //.round(true)
       .tile(d3.treemapSquarify.ratio(3));
 
     //svg.call(t);
@@ -153,90 +166,40 @@ d3.csv("data/treemapdata.csv").then(function(data){
             .attr("transform", (d) => `translate(${d.x0},${d.y0})`);
     }
     if(parent == "viz2"){
-        console.log(root.leaves());
         nodes = svg2
             .selectAll(".node")
             .data(root.leaves())
             .enter().append("g")
             .attr("transform", (d) => `translate(${d.x0},${d.y0})`);
     }
-  
     nodes.append("rect")
       .attr("class", "node")
       .attr("width", (d) => d.x1 - d.x0)
       .attr("height", (d) => d.y1 - d.y0)
-      .style("fill", function(d) { while (d.depth > 1) d = d.parent; return color(d.data.key); });
+      .style("fill", (d) => colors(dierplant[d.parent.data.key] + "-" + d.data.key));
 
-    //Agricultural area
-    /*nodes.append("rect")
+    //Grassland
+    nodes.append("rect")
       .attr("width", function(d){
         //check if horizontal or vertical
         if((d.x1 - d.x0)/(d.y1 - d.y0) < 1){ return d.x1 - d.x0; }
         else{
-          let agrperc = filterdata.filter(function(record){ return record.country == d.data.key })[0].agrpercent;
-          return (d.x1 - d.x0)*agrperc/100;
+          let grasperc = filterdata.filter(function(record){ return record.Locatie == d.data.key && record.Product == d.parent.data.key; })[0].Percgras;
+          //let agrperc = 40;
+          return (d.x1 - d.x0)*grasperc/100;
         }
       })
       .attr("height", function(d){
         if((d.x1 - d.x0)/(d.y1 - d.y0) < 1){
-          let agrperc = filterdata.filter(function(record){ return record.country == d.data.key })[0].agrpercent;
-          return (d.y1 - d.y0)*agrperc/100;
+          let grasperc = filterdata.filter(function(record){ return record.Locatie == d.data.key && record.Product == d.parent.data.key; })[0].Percgras;
+          return (d.y1 - d.y0)*grasperc/100;
         }
         else{ return d.y1 - d.y0; }
       })
-      .style("fill", t.url())
-      //.style("fill", "white")
-      .style("opacity", 0.3);*/
-    
-      //Spared/extra land
-    /*if(d3.select("#showspared").property("checked")){
-      nodes.append("rect")
-        .attr("x", function(d){
-          let spared = filterdata.filter(function(record){ return record.country == d.data.key })[0].spared;
-          let agrperc = filterdata.filter(function(record){ return record.country == d.data.key })[0].agrpercent;
-          if((d.x1 - d.x0)/(d.y1 - d.y0) < 1){ return 0; }
-          if((d.x1 - d.x0)/(d.y1 - d.y0) > 1 && spared > 0 ){ return (d.x1 - d.x0)*agrperc/100; }
-          if((d.x1 - d.x0)/(d.y1 - d.y0) > 1 && spared < 0 ){ return (d.x1 - d.x0)*(parseFloat(agrperc) + parseFloat(spared))/100; }
-        })
-        .attr("y", function(d){
-          let spared = filterdata.filter(function(record){ return record.country == d.data.key })[0].spared;
-          let agrperc = filterdata.filter(function(record){ return record.country == d.data.key })[0].agrpercent;
-          if((d.x1 - d.x0)/(d.y1 - d.y0) > 1){ return 0; }
-          if((d.x1 - d.x0)/(d.y1 - d.y0) < 1 && spared > 0 ){ return (d.y1 - d.y0)*agrperc/100; }
-          if((d.x1 - d.x0)/(d.y1 - d.y0) < 1 && spared < 0 ){ return (d.y1 - d.y0)*(parseFloat(agrperc) + parseFloat(spared))/100; }
-        })
-        .attr("width", function(d){
-          //check if horizontal or vertical
-          if((d.x1 - d.x0)/(d.y1 - d.y0) < 1){ return d.x1 - d.x0; }
-          else{
-            let spared = filterdata.filter(function(record){ return record.country == d.data.key })[0].spared;
-            return Math.abs((d.x1 - d.x0)*spared/100);
-          }
-        })
-        .attr("height", function(d){
-          if((d.x1 - d.x0)/(d.y1 - d.y0) < 1){
-            let spared = filterdata.filter(function(record){ return record.country == d.data.key })[0].spared;
-            return Math.abs((d.y1 - d.y0)*spared/100);
-          }
-          else{ return d.y1 - d.y0; }
-        })
-        .style("fill", function(d){
-          return "white";
-          //return t.url();
-        })
-        .style("opacity", function(d){
-          let spared = filterdata.filter(function(record){ return record.country == d.data.key })[0].spared;
-          if(spared > 0){
-            return 0.7;
-          }
-          if(spared <= 0){
-            return 0.5;
-          }
-        });
-      }*/
-
+      .style("fill", "url('#diagonalHatch')")
+      .style("opacity", 0.4);
   
-   let labels = nodes.append("text")
+   /*let labels = nodes.append("text")
       .attr("class", "node-label")
       .attr("x", function (d) {
             return (d.x1 - d.x0) / 2;
@@ -263,22 +226,39 @@ d3.csv("data/treemapdata.csv").then(function(data){
         if((d.x1  - d.x0) < bbox.width || (d.y1  - d.y0) < bbox.height){
             return 0;
         }
-    });
-    let labelsFirstLevel;
+    });*/
+    
+    //ICONS
+    const iconSize = 200;
+    const iconMargin = 2;
+    function fitIcon(d){
+        let size = iconSize;
+        let heightSize = iconSize;
+        let widthSize = iconSize;
+        if(iconSize > d.y1 - d.y0){
+            heightSize = d.y1 - d.y0 - 2*iconMargin;
+        }
+        if(iconSize > d.x1 - d.x0){
+            widthSize = d.x1 - d.x0 - 2*iconMargin;
+        }
+        return d3.min([size, heightSize, widthSize]);
+    }
     if(parent == "viz"){
         labelsFirstLevel = svg.selectAll("text.label-first-level").data(root.children)
-            .enter().append("g")
-            .attr("class", "label-first-level")
-            .attr("transform", (d) => `translate(${d.x0 + (d.x1 - d.x0)/ 2}, ${d.y0 + (d.y1 - d.y0)/ 2})`);
+            .enter().append("image")
+            .attr("href", (d) => "icons/" + d.data.key + ".svg")
+            .attr("height", (d) => fitIcon(d))
+            .attr("width", (d) => fitIcon(d))
+            .attr("transform", (d) => `translate(${d.x0 + (d.x1 - d.x0)/ 2 - fitIcon(d)/2}, ${d.y0 + (d.y1 - d.y0)/ 2 - fitIcon(d)/2})`);
     }
-    if(parent == "viz2"){
+    /*if(parent == "viz2"){
         labelsFirstLevel = svg2.selectAll("text.label-first-level").data(root.children)
             .enter().append("g")
             .attr("class", "label-first-level")
             .attr("transform", (d) => `translate(${d.x0 + (d.x1 - d.x0)/ 2}, ${d.y0 + (d.y1 - d.y0)/ 2})`);
-    }
+    }*/
 
-    let labelsFirstLevelText = labelsFirstLevel.append("text")
+    /*let labelsFirstLevelText = labelsFirstLevel.append("text")
         .attr('dy', '.4em')
         .attr("text-anchor", "middle")
         .text((d) => d.data.key);
@@ -300,12 +280,12 @@ d3.csv("data/treemapdata.csv").then(function(data){
             return 0;
         }
         else{return 0.5}
-    });
+    });*/
 
   }
 
   draw("viz", data, document.getElementById("width").value, document.getElementById("height").value);
-  draw("viz2", data, document.getElementById("width").value, document.getElementById("height").value);
+  //draw("viz2", data, document.getElementById("width").value, document.getElementById("height").value);
 
   /*d3.select("#continents")
 		.on("change", function () {

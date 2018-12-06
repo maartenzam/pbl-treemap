@@ -3,9 +3,53 @@
 <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
 <style>
 
+@font-face {
+	font-family: "Sans";
+	src: url("fonts/ROsanswebtextregular.eot?") format("embedded-opentype"),
+	     url("fonts/ROsanswebtextregular.woff") format("opentype");
+	font-style: normal;
+	font-weight: normal;
+}
+@font-face {
+	font-family: "Sans";
+	src: url("fonts/ROsanswebtextitalic.eot?") format("embedded-opentype"),
+	     url("fonts/ROsanswebtextitalic.woff") format("opentype");
+	font-style: italic;
+	font-weight: normal;
+}
+@font-face {
+	font-family: "Sans";
+	src: url("fonts/ROsanswebtextbold.eot?") format("embedded-opentype"),
+	     url("fonts/ROsanswebtextbold.woff") format("opentype");
+	font-weight: bold;
+	font-style: normal;
+}
+@font-face {
+	font-family: "Serif";
+	src: url("fonts/ROserifwebregular.eot?") format("embedded-opentype"),
+	     url("fonts/ROserifwebregular.woff") format("opentype");
+	font-style: normal;
+	font-weight: normal;
+}
+@font-face {
+	font-family: "Serif";
+	src: url("fonts/ROserifwebitalic.eot?") format("embedded-opentype"),
+	     url("fonts/ROserifwebitalic.woff") format("opentype");
+	font-style: italic;
+	font-weight: normal;
+}
+@font-face {
+	font-family: "Serif";
+	src: url("fonts/ROserifwebbold.eot?") format("embedded-opentype"),
+	     url("fonts/ROserifwebbold.woff") format("opentype");
+	font-weight: bold;
+	font-style: normal;
+}
+
 body {
+  
   position: relative;
-  font-family: "Roboto Condensed";
+  font-family: "Sans";
 }
 
 .node {
@@ -18,7 +62,7 @@ body {
   padding: 4px;
   line-height: 1em;
   font-size: 13px;
-  font-family: "Roboto Condensed";
+  font-family: "Sans";
   paint-order: stroke;		
   stroke: #ffffff;		
   stroke-width: 2;		
@@ -31,7 +75,7 @@ body {
   line-height: 1em;
   font-size: 26px;
   font-weight: bold;
-  font-family: "Roboto Condensed";		
+  font-family: "Sans";		
   color: white;
   opacity: 1;
 }
@@ -44,7 +88,14 @@ body {
   <!--svg id="test"></svg-->
   <h2>Naar product</h2>
   <div>
-    <svg id = "viz"></svg>
+    <svg id = "viz">
+        <defs>
+            <pattern id="diagonalHatch" patternUnits="userSpaceOnUse" width="20" height="20">
+            <path d="M 0,0 l 20,20 M -5,15 l 10,10 M 15,-5 l 10,10" 
+            style="stroke:white; stroke-width:2; opacity: 0.8" />
+            </pattern>
+        </defs>
+    </svg>
   </div>
   <h2>Naar herkomst</h2>
   <div>
