@@ -64,24 +64,6 @@ let svg2 = d3.select("#viz2")
   .attr("width", width)
   .attr("height", height);
 
-let t = textures.lines()
-  .orientation("6/8")  
-  .thicker()
-  .lighter()
-  .stroke("#ffffff");
-
-let s = textures.lines()
-  .orientation("2/8","6/8")  
-  .thicker()
-  .lighter()
-  .stroke("#ff0000");
-
-let sgreen = textures.lines()
-  .orientation("2/8", "6/8")  
-  .thicker()
-  .lighter()
-  .stroke("#00ff00");
-
 const colors = d3.scaleOrdinal()
     .range(["#9CCEF3", "#009CDF", "#0087BE", "#CFCF9F", "#B8B972", "#A2A448"])
     .domain(["Dierlijk-NL", "Dierlijk-EU", "Dierlijk-Buiten EU", "Plantaardig-NL", "Plantaardig-EU", "Plantaardig-Buiten EU"]);
@@ -175,7 +157,6 @@ d3.csv("data/treemapdata.csv").then(function(data){
             .enter().append("g")
             .attr("transform", (d) => `translate(${d.x0},${d.y0})`);
     }
-    console.log(root.leaves());
     nodes.append("rect")
       .attr("class", "node")
       .attr("width", (d) => d.x1 - d.x0)
