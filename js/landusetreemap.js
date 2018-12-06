@@ -118,11 +118,6 @@ d3.csv("data/treemapdata.csv").then(function(data){
       //.round(true)
       .tile(d3.treemapSquarify.ratio(3));
 
-    //svg.call(t);
-    //svg.selectAll("defs pattern path").attr("opacity", 0.5);
-    //svg.call(s);
-    //svg.call(sgreen); 
-
     let nest = d3.nest()
       .key((d) => {
           if(parent == "viz"){return d.Product; }
