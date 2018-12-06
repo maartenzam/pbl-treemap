@@ -1,7 +1,7 @@
 let filtereddata;
 
 let width = 960,
-    height = 960;
+    height = 600;
   
 let layout = [
   {
@@ -60,6 +60,10 @@ let svg = d3.select("#viz")
   .attr("width", width)
   .attr("height", height);
 
+let svg2 = d3.select("#viz2")
+  .attr("width", width)
+  .attr("height", height);
+
 let t = textures.lines()
   .orientation("6/8")  
   .thicker()
@@ -92,7 +96,7 @@ d3.csv("data/treemapdata.csv").then(function(data){
   })
   filtereddata = data;
 
-  function draw(filterdata, width, height){
+  function draw(parent, filterdata, width, height){
     /*testsvg.append('rect')
       .attr("width", width)
       .attr("height", height)
@@ -116,14 +120,20 @@ d3.csv("data/treemapdata.csv").then(function(data){
       .round(true)
       .tile(d3.treemapSquarify.ratio(3));
 
-    svg.call(t);
+    //svg.call(t);
     //svg.selectAll("defs pattern path").attr("opacity", 0.5);
-    svg.call(s);
-    svg.call(sgreen); 
+    //svg.call(s);
+    //svg.call(sgreen); 
 
     let nest = d3.nest()
-      .key((d) => d.Product)
-      .key((d) => d.Locatie)
+      .key((d) => {
+          if(parent == "viz"){return d.Product; }
+          if(parent == "viz2"){return d.Locatie}
+      })
+      .key((d) =>{
+        if(parent == "viz"){return d.Locatie; }
+        if(parent == "viz2"){return d.Product}
+    })
       .rollup(function(leaves) {
               return d3.sum(leaves, function(d) {return parseFloat(d.oppervlakte);})
           });
@@ -133,11 +143,23 @@ d3.csv("data/treemapdata.csv").then(function(data){
       .sort(function(a, b) { return b.height - a.height || b.value - a.value; });
 
     treemap(root);
-    let nodes = svg
-      .selectAll(".node")
-      .data(root.leaves())
-      .enter().append("g")
-      .attr("transform", (d) => `translate(${d.x0},${d.y0})`);
+
+    let nodes;
+    if(parent == "viz"){
+        nodes = svg
+            .selectAll(".node")
+            .data(root.leaves())
+            .enter().append("g")
+            .attr("transform", (d) => `translate(${d.x0},${d.y0})`);
+    }
+    if(parent == "viz2"){
+        console.log(root.leaves());
+        nodes = svg2
+            .selectAll(".node")
+            .data(root.leaves())
+            .enter().append("g")
+            .attr("transform", (d) => `translate(${d.x0},${d.y0})`);
+    }
   
     nodes.append("rect")
       .attr("class", "node")
@@ -242,16 +264,20 @@ d3.csv("data/treemapdata.csv").then(function(data){
             return 0;
         }
     });
-    let labelsFirstLevel = svg.selectAll("text.label-first-level").data(root.children)
-      .enter().append("g")
-      .attr("class", "label-first-level")
-      .attr("transform", (d) => `translate(${d.x0 + (d.x1 - d.x0)/ 2}, ${d.y0 + (d.y1 - d.y0)/ 2})`);
-      /*.attr("x", function (d) {
-            return (d.x1 - d.x0) / 2;
-        })
-        .attr("y", function (d) {
-            return (d.y1 - d.y0) / 2;
-        })*/
+    let labelsFirstLevel;
+    if(parent == "viz"){
+        labelsFirstLevel = svg.selectAll("text.label-first-level").data(root.children)
+            .enter().append("g")
+            .attr("class", "label-first-level")
+            .attr("transform", (d) => `translate(${d.x0 + (d.x1 - d.x0)/ 2}, ${d.y0 + (d.y1 - d.y0)/ 2})`);
+    }
+    if(parent == "viz2"){
+        labelsFirstLevel = svg2.selectAll("text.label-first-level").data(root.children)
+            .enter().append("g")
+            .attr("class", "label-first-level")
+            .attr("transform", (d) => `translate(${d.x0 + (d.x1 - d.x0)/ 2}, ${d.y0 + (d.y1 - d.y0)/ 2})`);
+    }
+
     let labelsFirstLevelText = labelsFirstLevel.append("text")
         .attr('dy', '.4em')
         .attr("text-anchor", "middle")
@@ -278,7 +304,8 @@ d3.csv("data/treemapdata.csv").then(function(data){
 
   }
 
-  draw(data, document.getElementById("width").value, document.getElementById("height").value);
+  draw("viz", data, document.getElementById("width").value, document.getElementById("height").value);
+  draw("viz2", data, document.getElementById("width").value, document.getElementById("height").value);
 
   /*d3.select("#continents")
 		.on("change", function () {
@@ -305,9 +332,12 @@ d3.csv("data/treemapdata.csv").then(function(data){
       let height = document.getElementById("height").value;
       svg.selectAll("*").remove();
       svg.attr("width", width).attr("height", height);
+      svg2.selectAll("*").remove();
+      svg2.attr("width", width).attr("height", height);
       //testsvg.selectAll("*").remove();
       //testsvg.attr("width", width).attr("height", height);
-      draw(filtereddata, width, height);
+      draw("viz", filtereddata, width, height);
+      draw("viz2", filtereddata, width, height);
     })
 
 });
