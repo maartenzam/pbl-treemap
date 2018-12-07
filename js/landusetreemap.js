@@ -58,7 +58,8 @@ let margin = 5;
   
 let svg = d3.select("#viz")
   .attr("width", width)
-  .attr("height", height);
+  .attr("height", height)
+  .append("g");
 
 let svg2 = d3.select("#viz2")
   .attr("width", width)
@@ -80,6 +81,20 @@ const dierplant = {
     "zoet & gebak": "Plantaardig",
     "vis": "Dierlijk",
     "vegi": "Plantaardig"
+}
+
+const catnamen = {
+  "rundvlees": "Rundvlees",
+  "varkensvlees": "Varkensvlees",
+  "zuivel": "Zuivel",
+  "kip & ei": "Kippenvlees en eieren",
+  "agf": "Aardappelen, groenten en fruit",
+  "vet & snack": "Vetten, hartige sauzen, snacks",
+  "dranken": "Dranken",
+  "brood & graan": "Brood, graanproducten",
+  "zoet & gebak": "Zoete producten en gebak",
+  "vis": "Vis",
+  "vegi": "Vegetarische producten, noten, peulvruchten"
 }
 
 var tooltip = d3.select("body").append("div")	
@@ -162,7 +177,7 @@ d3.csv("data/treemapdata.csv").then(function(data){
             .style("stroke", "#00374D")
             .style("stroke-width", 1);
         tooltip
-            .html(`<h2>${d.parent.data.key}</h2>
+            .html(`<h2>${catnamen[d.parent.data.key]}</h2>
                 <p>Locatie: ${d.data.key}</p>
                 <p>Landgebruik: ${d.data.value} m2/persoon/jaar</p>`)
             .transition()		
@@ -236,8 +251,8 @@ d3.csv("data/treemapdata.csv").then(function(data){
     });*/
     
     //ICONS
-    const iconSize = 200;
-    const iconMargin = 2;
+    const iconSize = 160;
+    const iconMargin = 20;
     function fitIcon(d){
         let size = iconSize;
         let heightSize = iconSize;
@@ -248,10 +263,12 @@ d3.csv("data/treemapdata.csv").then(function(data){
         if(iconSize > d.x1 - d.x0){
             widthSize = d.x1 - d.x0 - 2*iconMargin;
         }
-        return d3.min([size, heightSize, widthSize]);
+        let newSize = d3.min([size, heightSize, widthSize]);
+        if(newSize < 20){newSize = 20; }
+        return newSize;
     }
     if(parent == "viz"){
-        labelsFirstLevel = svg.selectAll("text.label-first-level").data(root.children)
+        labelsFirstLevel = svg.selectAll("image").data(root.children)
             .enter().append("image")
             .attr("href", (d) => "icons/" + d.data.key + ".svg")
             .attr("height", (d) => fitIcon(d))
