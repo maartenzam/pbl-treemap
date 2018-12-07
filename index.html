@@ -4,10 +4,12 @@
 
 <body>
 
-  <div class="slidecontainer">
-    Width: <input type="text" value="960" class="slider" id="width">
-    Height: <input type="text" value="600" class="slider" id="height">
+  <div class="parameters">
+    Width: <input type="text" value="960" class="parameter" id="width">
+    Height: <input type="text" value="600" class="parameter" id="height">
+    Width/height ratio of rectangles: <input type="text" value="2" class="parameter" id="ratio">
   </div>
+  <h2>Naar product</h2>
   <div id="legend">
     <div class="legend-column">
         <p>Dierlijk</p>
@@ -31,10 +33,10 @@
         </defs>
     </svg>
   </div>
-  <!--h2>Naar herkomst</h2>
+  <h2>Naar herkomst</h2>
   <div>
       <svg id = "viz2"></svg>
-  </div-->
+  </div>
 
 <script src="//d3js.org/d3.v5.min.js"></script>
 <script src="js/landusetreemap.js"></script>

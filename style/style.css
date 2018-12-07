@@ -91,13 +91,26 @@ body {
 }
 
 div.tooltip {	
-    padding: 12px;
+    padding: 6px;
     position: absolute;		
     width: 250px;																
     background: #00374D;	
     border: 0px;				
     pointer-events: none;
     color: #ffffff;			
+}
+
+div.tooltip h2 {
+	font-size: 16px;
+	font-weight: bold;
+	margin-bottom: 4px;
+	margin-top: 0px;
+}
+
+div.tooltip p {
+	font-size: 16px;
+	margin-bottom: 4px;
+	margin-top: 0px;
 }
 
 svg image {
