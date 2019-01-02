@@ -15,7 +15,7 @@ let svg2 = d3.select("#viz2")
 
 const colors = d3.scaleOrdinal()
     .range(["#9CCEF3", "#009CDF", "#0087BE", "#CFCF9F", "#B8B972", "#A2A448"])
-    .domain(["Dierlijk-NL", "Dierlijk-EU", "Dierlijk-Buiten EU", "Plantaardig-NL", "Plantaardig-EU", "Plantaardig-Buiten EU"]);
+    .domain(["Dierlijk-Buiten EU", "Dierlijk-EU", "Dierlijk-NL", "Plantaardig-Buiten EU", "Plantaardig-EU", "Plantaardig-NL"]);
 
 const dierplant = {
     "rundvlees": "Dierlijk",
@@ -49,7 +49,7 @@ var tooltip = d3.select("body").append("div")
     .attr("class", "tooltip")				
     .style("opacity", 0);
 
-d3.csv("data/treemapdata.csv").then(function(data){
+d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
 
   data.forEach(function(d){
     d.oppervlakte = +d.Totopp;

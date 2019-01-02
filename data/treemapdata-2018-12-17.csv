@@ -1,0 +1,34 @@
+"Product","Locatie","Categorie","Totopp","Percgras"
+"agf","Buiten EU","Plantaardig",16.1,0
+"agf","EU","Plantaardig",26.5,0
+"agf","NL","Plantaardig",69.3,0
+"brood & graan","Buiten EU","Plantaardig",15,0
+"brood & graan","EU","Plantaardig",152.6,0
+"brood & graan","NL","Plantaardig",15,0
+"dranken","Buiten EU","Plantaardig",262,0
+"dranken","EU","Plantaardig",78,0
+"dranken","NL","Plantaardig",27,0
+"kip & ei","Buiten EU","Dierlijk",41.1,0
+"kip & ei","EU","Dierlijk",158.4,0
+"kip & ei","NL","Dierlijk",19.8,0
+"rundvlees","Buiten EU","Dierlijk",295.6,70.5
+"rundvlees","EU","Dierlijk",343.8,74.6
+"rundvlees","NL","Dierlijk",307,73.7
+"varkensvlees","Buiten EU","Plantaardig",63.4,0
+"varkensvlees","EU","Plantaardig",261.5,0
+"varkensvlees","NL","Plantaardig",17.7,0
+"vegi","Buiten EU","Plantaardig",35.7,0
+"vegi","EU","Plantaardig",4.7,0
+"vegi","NL","Plantaardig",0,0
+"vet & snack","Buiten EU","Plantaardig",90,4.4
+"vet & snack","EU","Plantaardig",145.1,3.4
+"vet & snack","NL","Plantaardig",38,18.4
+"vis","Buiten EU","Dierlijk",16.7,0
+"vis","EU","Dierlijk",5,0
+"vis","NL","Dierlijk",0,0
+"zoet & gebak","Buiten EU","Plantaardig",23,0
+"zoet & gebak","EU","Plantaardig",80,0
+"zoet & gebak","NL","Plantaardig",28,0
+"zuivel","Buiten EU","Dierlijk",78,0
+"zuivel","EU","Dierlijk",80,25
+"zuivel","NL","Dierlijk",256.5,79.3

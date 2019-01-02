@@ -64,7 +64,7 @@ body {
     margin: 0;
 }
 
-.plant-buiten {
+.plant-nl {
     background-color: #A2A448;
 }
 
@@ -72,12 +72,12 @@ body {
     background-color: #B8B972;
 }
 
-.plant-nl {
+.plant-buiten {
     background-color: #CFCF9F;
     color: #000000;
 }
 
-.dier-buiten {
+.dier-nl {
     background-color: #0087BE;
 }
 
@@ -85,7 +85,7 @@ body {
     background-color: #009CDF;
 }
 
-.dier-nl {
+.dier-buiten {
     background-color: #9CCEF3;
     color: #000000;
 }
