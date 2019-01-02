@@ -50,15 +50,17 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
     d.oppervlakte = +d.Totopp;
     d.percgras = +d.Percgras;
   })
-  dierData = data.filter(function(el){
-    return el.Categorie == "Dierlijk";
-  });
-  plantData = data.filter(function(el){
-    return el.Categorie == "Plantaardig";
-  });
 
-  function draw(animaldata, plantdata, width, height, ratio){
+  function draw(data, width, height, ratio){
     animalToTotalRatio = 1944/(1944 + 1106);
+    let switched = document.getElementById("switch").checked;
+
+    animaldata = data.filter(function(el){
+      return el.Categorie == "Dierlijk";
+    });
+    plantdata = data.filter(function(el){
+      return el.Categorie == "Plantaardig";
+    });
 
     gLeft = svg.append("g");
     gRight = svg.append("g")
@@ -107,7 +109,8 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
       .attr("width", (d) => d.x1 - d.x0)
       .attr("height", (d) => d.y1 - d.y0)
       .style("fill", (d) => {
-          return colors(dierplant[d.parent.data.key] + "-" + d.data.key);
+          if(switched){return colors(dierplant[d.parent.data.key] + "-" + d.data.key);}
+          else{ return "#159ADF";}
       })
       .on("mouseover", function(d) {
         d3.select(this)
@@ -142,7 +145,8 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
     .attr("width", (d) => d.x1 - d.x0)
     .attr("height", (d) => d.y1 - d.y0)
     .style("fill", (d) => {
-        return colors(dierplant[d.parent.data.key] + "-" + d.data.key);
+        if(switched){return colors(dierplant[d.parent.data.key] + "-" + d.data.key); }
+        else{return "#B8BB72"}
     })
     .on("mouseover", function(d) {
       d3.select(this)
@@ -194,6 +198,27 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
       .style("fill", "url('#diagonalHatch')")
       .style("opacity", 0.4)
       .style("pointer-events", "none");
+
+      nodesPlants.append("rect")
+      .attr("width", function(d){
+        //check if horizontal or vertical
+        if((d.x1 - d.x0)/(d.y1 - d.y0) < 1){ return d.x1 - d.x0; }
+        else{
+          let grasperc;
+            grasperc = plantdata.filter(function(record){ return record.Locatie == d.data.key && record.Product == d.parent.data.key; })[0].Percgras;
+          return (d.x1 - d.x0)*grasperc/100;
+        }
+      })
+      .attr("height", function(d){
+        if((d.x1 - d.x0)/(d.y1 - d.y0) < 1){
+            grasperc = plantdata.filter(function(record){ return record.Locatie == d.data.key && record.Product == d.parent.data.key; })[0].Percgras;
+          return (d.y1 - d.y0)*grasperc/100;
+        }
+        else{ return d.y1 - d.y0; }
+      })
+      .style("fill", "url('#diagonalHatch')")
+      .style("opacity", 0.4)
+      .style("pointer-events", "none");
     
     //Icons
     const iconSize = 160;
@@ -225,9 +250,13 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
             .attr("height", (d) => fitIcon(d))
             .attr("width", (d) => fitIcon(d))
             .attr("transform", (d) => `translate(${d.x0 + (d.x1 - d.x0)/ 2 - fitIcon(d)/2}, ${d.y0 + (d.y1 - d.y0)/ 2 - fitIcon(d)/2})`);
+        if(switched){
+          d3.select("#legend").transition().duration(450).style("opacity", 1)
+        }
+        else{d3.select("#legend").transition().duration(450).style("opacity", 0);}
   }
 
-  draw(dierData, plantData, document.getElementById("width").value, document.getElementById("height").value);
+  draw(data, document.getElementById("width").value, document.getElementById("height").value, document.getElementById("ratio").value);
 
   d3.selectAll(".parameter")
     .on("change", function(){
@@ -236,6 +265,6 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
       let ratio = document.getElementById("ratio").value;
       svg.selectAll("*").remove();
       d3.select(("#viz")).attr("width", width).attr("height", height);
-      draw("viz", filtereddata, width, height, ratio);
+      draw(data, width, height, ratio);
     })
 });
