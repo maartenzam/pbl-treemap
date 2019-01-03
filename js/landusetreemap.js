@@ -71,15 +71,15 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
       .tile(d3.treemapSquarify.ratio(ratio));
 
     let nest = d3.nest()
-      .key((d) => d.Categorie)
-      .key((d) => d.Product)
-      .key((d) => d.Locatie)
+      .key(function(d){ return d.Categorie; })
+      .key(function(d){ return d.Product; })
+      .key(function(d){ return d.Locatie; })
       .rollup(function(leaves) {
         return d3.sum(leaves, function(d) {return parseFloat(d.oppervlakte);})
       });
     
-    let root = d3.hierarchy({values: nest.entries(data)},(d) => d.values)
-      .sum((d) => d.value)
+    let root = d3.hierarchy({values: nest.entries(data)},function(d){ return d.values; })
+      .sum(function(d){ return d.value; })
       .sort(function(a, b) { return b.height - a.height || b.value - a.value; });
     
     treemap(root);
