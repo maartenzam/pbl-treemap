@@ -104,10 +104,7 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
             .style("stroke-width", 1);
         tooltip
             .html(function(){
-                return `<h2>${catnamen[d.parent.data.key]}</h2>
-                <p>NL: ${d.parent.data.values[2].value}</p>
-                <p>EU: ${d.parent.data.values[1].value}</p>
-                <p>Buiten EU: ${d.parent.data.values[0].value}</p>`;
+                return "<h2>" + catnamen[d.parent.data.key] + "</h2><p>NL: " + d.parent.data.values[2].value + "</p><p>EU: " + d.parent.data.values[1].value + "</p><p>Buiten EU: " + d.parent.data.values[0].value + "</p>";
             })
             .transition()		
             .duration(200)		
