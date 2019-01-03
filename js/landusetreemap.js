@@ -1,6 +1,6 @@
-let width = 960,
-    height = 600,
-    ratio = 2;
+let width = 960;
+let height = 600;
+let ratio = 2;
   
 let viz = d3.select("#viz")
   .style("width", width + "px")
