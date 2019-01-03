@@ -24,6 +24,20 @@ const dierplant = {
     "vegi": "Plantaardig"
 }
 
+const graspercs = {
+  "rundvlees": 73,
+  "varkensvlees": 0,
+  "zuivel": 53.92,
+  "kip & ei": 0,
+  "agf": 0,
+  "vet & snack": 5.86,
+  "dranken": 0,
+  "brood & graan": 0,
+  "zoet & gebak": 0,
+  "vis": 0,
+  "vegi": 0
+}
+
 const catnamen = {
   "rundvlees": "Rundvlees",
   "varkensvlees": "Varkensvlees",
@@ -131,49 +145,6 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
             .duration(500)		
             .style("opacity", 0);	
     });
-
-    //Grassland
-    /*nodesAnimals.append("rect")
-      .attr("width", function(d){
-        //check if horizontal or vertical
-        if((d.x1 - d.x0)/(d.y1 - d.y0) < 1){ return d.x1 - d.x0; }
-        else{
-          let grasperc;
-            grasperc = animaldata.filter(function(record){ return record.Locatie == d.data.key && record.Product == d.parent.data.key; })[0].Percgras;
-          return (d.x1 - d.x0)*grasperc/100;
-        }
-      })
-      .attr("height", function(d){
-        if((d.x1 - d.x0)/(d.y1 - d.y0) < 1){
-            grasperc = animaldata.filter(function(record){ return record.Locatie == d.data.key && record.Product == d.parent.data.key; })[0].Percgras;
-          return (d.y1 - d.y0)*grasperc/100;
-        }
-        else{ return d.y1 - d.y0; }
-      })
-      .style("fill", "url('#diagonalHatch')")
-      .style("opacity", 0.4)
-      .style("pointer-events", "none");
-
-      nodesPlants.append("rect")
-      .attr("width", function(d){
-        //check if horizontal or vertical
-        if((d.x1 - d.x0)/(d.y1 - d.y0) < 1){ return d.x1 - d.x0; }
-        else{
-          let grasperc;
-            grasperc = plantdata.filter(function(record){ return record.Locatie == d.data.key && record.Product == d.parent.data.key; })[0].Percgras;
-          return (d.x1 - d.x0)*grasperc/100;
-        }
-      })
-      .attr("height", function(d){
-        if((d.x1 - d.x0)/(d.y1 - d.y0) < 1){
-            grasperc = plantdata.filter(function(record){ return record.Locatie == d.data.key && record.Product == d.parent.data.key; })[0].Percgras;
-          return (d.y1 - d.y0)*grasperc/100;
-        }
-        else{ return d.y1 - d.y0; }
-      })
-      .style("fill", "url('#diagonalHatch')")
-      .style("opacity", 0.4)
-      .style("pointer-events", "none");*/
     
     //Icons
     const iconSize = 160;
@@ -199,6 +170,31 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
         .attr("src", (d) => "icons/" + d.data.key + ".svg")
         .style("height", (d) => fitIcon(d) + "px")
         .style("width", (d) => fitIcon(d) + "px");
+
+        //Grassland
+
+      viz.selectAll(".node.grass")
+          .data(productData)
+          .enter().append("div")
+          .attr("class", "node grass")
+          .style("left", (d) => d.x0 + "px")
+          .style("top", (d) => d.y0 + "px")
+          .style("width", function(d){
+            //check if horizontal or vertical
+            if((d.x1 - d.x0)/(d.y1 - d.y0) < 1){ return (d.x1 - d.x0) + "px"; }
+            else{
+              let grasperc = graspercs[d.data.key];
+              return ((d.x1 - d.x0)*grasperc/100) + "px";
+            }
+          })
+          .style("height", function(d){
+            if((d.x1 - d.x0)/(d.y1 - d.y0) < 1){
+              let grasperc = graspercs[d.data.key];
+              return ((d.y1 - d.y0)*grasperc/100) + "px";
+            }
+            else{ return (d.y1 - d.y0) + "px"; }
+          })
+          .style("background-color", (d) => colors(d.parent.data.key + "-EU"));
         
     if(switched){
           d3.select("#legend").transition().duration(450).style("opacity", 1)

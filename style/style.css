@@ -204,6 +204,14 @@ svg image {
 	  white-space: nowrap;
   }
 
+  .node.grass {
+	border:3px solid white;
+	opacity: 0.4;
+	background-image: repeating-linear-gradient(
+		45deg, transparent, transparent 6px, rgba(255,255,255,.5) 12px, rgba(255,255,255,.5) 12px
+		);
+  }
+
   .imghelper {
 	display: inline-block;
 	height: 100%;
