@@ -85,7 +85,7 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
     treemap(root);
 
     let productData = root.children[0].children.concat(root.children[1].children);
-    console.log(productData);
+
     //Lower level divs
     viz
       .selectAll(".node.low")
