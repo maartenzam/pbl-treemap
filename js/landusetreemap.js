@@ -86,20 +86,8 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
     treemap(root);
 
     let productData = root.children[0].children.concat(root.children[1].children);
-    console.log(productData);
-
-    //Higher level divs
-    let highNodes = viz.selectAll(".node.high")
-      .data(productData)
-      .enter().append("div")
-      .attr("class", "node high")
-      .attr("id", (d) => d.data.key)
-      .style("left", (d) => d.x0 + "px")
-      .style("top", (d) => d.y0 + "px")
-      .style("width", (d) => d.x1 - d.x0 + "px")
-      .style("height", (d) => d.y1 - d.y0 + "px")
-      .style("background", (d) => colors(d.parent.data.key + "-EU"));
-
+    
+    //Lower level divs
     viz
       .selectAll(".node.low")
       .data(root.leaves())
@@ -109,14 +97,8 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
       .style("top", (d) => d.y0 + "px")
       .style("width", (d) => d.x1 - d.x0 + "px")
       .style("height", (d) => d.y1 - d.y0 + "px")
-      .style("background", (d) => {
-          if(switched){return colors(dierplant[d.parent.data.key] + "-" + d.data.key);}
-          else{return colors(dierplant[d.parent.data.key] + "-EU");}
-      })
-      .style("opacity", function(){
-        if(switched){ return 1; }
-        else{ return 0; }
-      })
+      .style("background", (d) => colors(dierplant[d.parent.data.key] + "-" + d.data.key))
+      .style("opacity", 0)
       .on("mouseover", function(d) {
         d3.select(this)
             .style("stroke", "#00374D")
@@ -145,6 +127,18 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
             .duration(500)		
             .style("opacity", 0);	
     });
+
+    //Higher level divs
+    let highNodes = viz.selectAll(".node.high")
+        .data(productData)
+        .enter().append("div")
+        .attr("class", "node high")
+        .attr("id", (d) => d.data.key)
+        .style("left", (d) => d.x0 + "px")
+        .style("top", (d) => d.y0 + "px")
+        .style("width", (d) => d.x1 - d.x0 + "px")
+        .style("height", (d) => d.y1 - d.y0 + "px")
+        .style("background-color", (d) => colors(d.parent.data.key + "-EU"));
     
     //Icons
     const iconSize = 160;
@@ -171,14 +165,9 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
         .style("height", (d) => fitIcon(d) + "px")
         .style("width", (d) => fitIcon(d) + "px");
 
-        //Grassland
-
-      viz.selectAll(".node.grass")
-          .data(productData)
-          .enter().append("div")
+      //Grassland
+        highNodes.insert("div", "span")
           .attr("class", "node grass")
-          .style("left", (d) => d.x0 + "px")
-          .style("top", (d) => d.y0 + "px")
           .style("width", function(d){
             //check if horizontal or vertical
             if((d.x1 - d.x0)/(d.y1 - d.y0) < 1){ return (d.x1 - d.x0) + "px"; }
@@ -194,15 +183,27 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
             }
             else{ return (d.y1 - d.y0) + "px"; }
           })
-          .style("background-color", (d) => colors(d.parent.data.key + "-EU"));
-        
-    if(switched){
-          d3.select("#legend").transition().duration(450).style("opacity", 1)
-        }
-    else{d3.select("#legend").transition().duration(450).style("opacity", 0);}
+          .style("background-color", "transparent");
+
   }
 
-  draw(data, document.getElementById("width").value, document.getElementById("height").value, document.getElementById("ratio").value);
+  //draw(data, document.getElementById("width").value, document.getElementById("height").value, document.getElementById("ratio").value);
+  draw(data, 960, 600, 2);
+
+  d3.select("#switch").on("change", function(){
+    if(document.getElementById("switch").checked){
+      d3.selectAll(".node.low").transition().duration(1000).style("opacity", 1);
+      d3.selectAll(".node.high").transition().duration(1000).style("background-color", "rgba(0,0,0,0)");
+      d3.selectAll(".node.grass").transition().duration(1000).style("opacity", 0);
+      d3.select("#legend").transition().duration(1000).style("opacity", 1)
+    };
+    if(!document.getElementById("switch").checked){
+      d3.selectAll(".node.low").transition().duration(1000).style("opacity", 0);
+      d3.selectAll(".node.high").transition().duration(1000).style("background-color", (d) => colors(d.parent.data.key + "-EU"));
+      d3.selectAll(".node.grass").transition().duration(1000).style("opacity", 0.4);
+      d3.select("#legend").transition().duration(1000).style("opacity", 0)
+    };
+  })
 
   d3.selectAll(".parameter")
     .on("change", function(){
