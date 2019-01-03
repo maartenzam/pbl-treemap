@@ -187,3 +187,13 @@ svg image {
   #legend {
 	  opacity: 0;
   }
+
+  #viz {
+	  position: relative;
+  }
+
+  .node {
+	box-sizing: border-box;
+	position: absolute;
+	overflow: hidden;
+  }

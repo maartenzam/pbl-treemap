@@ -1,12 +1,10 @@
-let filtereddata;
-
 let width = 960,
     height = 600,
     ratio = 2;
   
-let svg = d3.select("#viz")
-  .attr("width", width)
-  .attr("height", height);
+let viz = d3.select("#viz")
+  .style("width", width + "px")
+  .style("height", height + "px");
 
 const colors = d3.scaleOrdinal()
     .range(["#9CCEF3", "#009CDF", "#0087BE", "#CFCF9F", "#B8B972", "#A2A448"])
@@ -52,65 +50,39 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
   })
 
   function draw(data, width, height, ratio){
-    animalToTotalRatio = 1944/(1944 + 1106);
     let switched = document.getElementById("switch").checked;
 
-    animaldata = data.filter(function(el){
-      return el.Categorie == "Dierlijk";
-    });
-    plantdata = data.filter(function(el){
-      return el.Categorie == "Plantaardig";
-    });
-
-    gLeft = svg.append("g");
-    gRight = svg.append("g")
-      .attr("transform", `translate(${width*animalToTotalRatio},0)`);
-
-    var treemapLeft = d3.treemap()
-      .size([width*animalToTotalRatio, height])
-      .paddingOuter(3)
-      .tile(d3.treemapSquarify.ratio(ratio));
-    var treemapRight = d3.treemap()
-      .size([width*(1-animalToTotalRatio), height])
+    var treemap = d3.treemap()
+      .size([width, height])
       .paddingOuter(3)
       .tile(d3.treemapSquarify.ratio(ratio));
 
     let nest = d3.nest()
-      .key((d) =>  d.Product)
+      .key((d) => d.Categorie)
+      .key((d) => d.Product)
       .key((d) => d.Locatie)
       .rollup(function(leaves) {
-              return d3.sum(leaves, function(d) {return parseFloat(d.oppervlakte);})
-          });
+        return d3.sum(leaves, function(d) {return parseFloat(d.oppervlakte);})
+      });
     
-    let rootAnimals = d3.hierarchy({values: nest.entries(animaldata)},(d) => d.values)
+    let root = d3.hierarchy({values: nest.entries(data)},(d) => d.values)
       .sum((d) => d.value)
       .sort(function(a, b) { return b.height - a.height || b.value - a.value; });
     
-    treemapLeft(rootAnimals);
+    treemap(root);
 
-    let rootPlants = d3.hierarchy({values: nest.entries(plantdata)},(d) => d.values)
-      .sum((d) => d.value)
-      .sort(function(a, b) { return b.height - a.height || b.value - a.value; });
-    treemapRight(rootPlants);
-
-    let nodesAnimals = gLeft
-        .selectAll(".node")
-        .data(rootAnimals.leaves())
-        .enter().append("g")
-        .attr("transform", (d) => `translate(${d.x0},${d.y0})`);
-    let nodesPlants = gRight
-        .selectAll(".node")
-        .data(rootPlants.leaves())
-        .enter().append("g")
-        .attr("transform", (d) => `translate(${d.x0},${d.y0})`);
-
-    nodesAnimals.append("rect")
+    viz
+      .selectAll(".node")
+      .data(root.leaves())
+      .enter().append("div")
       .attr("class", "node")
-      .attr("width", (d) => d.x1 - d.x0)
-      .attr("height", (d) => d.y1 - d.y0)
-      .style("fill", (d) => {
+      .style("left", (d) => d.x0 + "px")
+      .style("top", (d) => d.y0 + "px")
+      .style("width", (d) => d.x1 - d.x0 + "px")
+      .style("height", (d) => d.y1 - d.y0 + "px")
+      .style("background", (d) => {
           if(switched){return colors(dierplant[d.parent.data.key] + "-" + d.data.key);}
-          else{ return "#159ADF";}
+          else{return colors(dierplant[d.parent.data.key] + "-EU");}
       })
       .on("mouseover", function(d) {
         d3.select(this)
@@ -140,45 +112,9 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
             .duration(500)		
             .style("opacity", 0);	
     });
-    nodesPlants.append("rect")
-    .attr("class", "node")
-    .attr("width", (d) => d.x1 - d.x0)
-    .attr("height", (d) => d.y1 - d.y0)
-    .style("fill", (d) => {
-        if(switched){return colors(dierplant[d.parent.data.key] + "-" + d.data.key); }
-        else{return "#B8BB72"}
-    })
-    .on("mouseover", function(d) {
-      d3.select(this)
-          .style("stroke", "#00374D")
-          .style("stroke-width", 1);
-      tooltip
-          .html(function(){
-              return `<h2>${catnamen[d.parent.data.key]}</h2>
-              <p>Locatie: ${d.data.key}</p>
-              <p>Landgebruik: ${d.data.value} m2/persoon/jaar</p>`;
-          })
-          .transition()		
-          .duration(200)		
-          .style("opacity", 1)			
-          .style("left", (d3.event.pageX + 28) + "px")		
-          .style("top", (d3.event.pageY - 28) + "px");	
-      })
-      .on("mousemove", function(d) {		
-          tooltip	
-              .style("left", (d3.event.pageX + 28) + "px")		
-              .style("top", (d3.event.pageY - 28) + "px");	
-          })					
-    .on("mouseout", function(d) {	
-      d3.select(this)
-          .style("stroke-width", 0);	
-      tooltip.transition()		
-          .duration(500)		
-          .style("opacity", 0);	
-  });
 
     //Grassland
-    nodesAnimals.append("rect")
+    /*nodesAnimals.append("rect")
       .attr("width", function(d){
         //check if horizontal or vertical
         if((d.x1 - d.x0)/(d.y1 - d.y0) < 1){ return d.x1 - d.x0; }
@@ -218,10 +154,10 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
       })
       .style("fill", "url('#diagonalHatch')")
       .style("opacity", 0.4)
-      .style("pointer-events", "none");
+      .style("pointer-events", "none");*/
     
     //Icons
-    const iconSize = 160;
+    /*const iconSize = 160;
     const iconMargin = 20;
     function fitIcon(d){
         let size = iconSize;
@@ -238,13 +174,7 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
         if(d.y1 - d.y0 < 10 || d.x1 - d.x0 < 10){newSize = 0; }
         return newSize;
     }
-        gLeft.selectAll("image").data(rootAnimals.children)
-            .enter().append("image")
-            .attr("href", (d) => "icons/" + d.data.key + ".svg")
-            .attr("height", (d) => fitIcon(d))
-            .attr("width", (d) => fitIcon(d))
-            .attr("transform", (d) => `translate(${d.x0 + (d.x1 - d.x0)/ 2 - fitIcon(d)/2}, ${d.y0 + (d.y1 - d.y0)/ 2 - fitIcon(d)/2})`);
-        gRight.selectAll("image").data(rootPlants.children)
+        viz.selectAll("image").data(root.children)
             .enter().append("image")
             .attr("href", (d) => "icons/" + d.data.key + ".svg")
             .attr("height", (d) => fitIcon(d))
@@ -253,7 +183,7 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
         if(switched){
           d3.select("#legend").transition().duration(450).style("opacity", 1)
         }
-        else{d3.select("#legend").transition().duration(450).style("opacity", 0);}
+        else{d3.select("#legend").transition().duration(450).style("opacity", 0);}*/
   }
 
   draw(data, document.getElementById("width").value, document.getElementById("height").value, document.getElementById("ratio").value);
@@ -263,8 +193,8 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
       let width = document.getElementById("width").value;
       let height = document.getElementById("height").value;
       let ratio = document.getElementById("ratio").value;
-      svg.selectAll("*").remove();
-      d3.select(("#viz")).attr("width", width).attr("height", height);
+      viz.selectAll("*").remove();
+      d3.select(("#viz")).style("width", width + "px").style("height", height + "px");
       draw(data, width, height, ratio);
     })
 });
