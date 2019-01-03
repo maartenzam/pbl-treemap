@@ -56,8 +56,8 @@ var tooltip = d3.select("body").append("div")
     .attr("class", "tooltip")				
     .style("opacity", 0);
 
-d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
-
+//d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
+  d3.csv("data/treemapdata-2018-12-17.csv", function(data){
   data.forEach(function(d){
     d.oppervlakte = +d.Totopp;
     d.percgras = +d.Percgras;
