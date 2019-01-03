@@ -92,11 +92,11 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
       .data(root.leaves())
       .enter().append("div")
       .attr("class", "node low")
-      .style("left", (d) => d.x0 + "px")
-      .style("top", (d) => d.y0 + "px")
-      .style("width", (d) => d.x1 - d.x0 + "px")
-      .style("height", (d) => d.y1 - d.y0 + "px")
-      .style("background", (d) => colors(dierplant[d.parent.data.key] + "-" + d.data.key))
+      .style("left", function(d) { return d.x0 + "px"})
+      .style("top", function(d) { return d.y0 + "px"})
+      .style("width", function(d) { return d.x1 - d.x0 + "px"})
+      .style("height", function(d) { return d.y1 - d.y0 + "px"})
+      .style("background", function(d) { return colors(dierplant[d.parent.data.key] + "-" + d.data.key)})
       .style("opacity", 0)
       .on("mouseover", function(d) {
         d3.select(this)
@@ -133,13 +133,13 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
         .data(productData)
         .enter().append("div")
         .attr("class", "node high")
-        .attr("id", (d) => d.data.key)
-        .style("left", (d) => d.x0 + "px")
-        .style("top", (d) => d.y0 + "px")
-        .style("width", (d) => d.x1 - d.x0 + "px")
-        .style("height", (d) => d.y1 - d.y0 + "px")
-        .style("background-color", (d) => colors(d.parent.data.key + "-EU"));
-      highNodes.append("div").attr("class", "node-label").text((d) => Math.round(d.value));
+        .attr("id", function(d) { return d.data.key; })
+        .style("left", function(d) { return d.x0 + "px"; })
+        .style("top", function(d) { return d.y0 + "px"; })
+        .style("width", function(d) { return d.x1 - d.x0 + "px"; })
+        .style("height", function(d) { return d.y1 - d.y0 + "px"; })
+        .style("background-color", function(d) { return colors(d.parent.data.key + "-EU"); });
+      highNodes.append("div").attr("class", "node-label").text(function(d) { return Math.round(d.value); });
     
     //Icons
     const iconSize = 160;
@@ -162,9 +162,9 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
     highNodes
         .append("span").attr("class", "imghelper");
     highNodes.append("img")
-        .attr("src", (d) => "icons/" + d.data.key + ".svg")
-        .style("height", (d) => fitIcon(d) + "px")
-        .style("width", (d) => fitIcon(d) + "px");
+        .attr("src", function(d) { return "icons/" + d.data.key + ".svg"; })
+        .style("height", function(d) { return fitIcon(d) + "px"; })
+        .style("width", function(d) { return fitIcon(d) + "px"; });
 
       //Grassland
         highNodes.insert("div", "span")
@@ -200,7 +200,7 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
     };
     if(!document.getElementById("switch").checked){
       d3.selectAll(".node.low").transition().duration(1000).style("opacity", 0);
-      d3.selectAll(".node.high").transition().duration(1000).style("background-color", (d) => colors(d.parent.data.key + "-EU"));
+      d3.selectAll(".node.high").transition().duration(1000).style("background-color", function(d) { return colors(d.parent.data.key + "-EU"); });
       d3.selectAll(".node.grass").transition().duration(1000).style("opacity", 0.4);
       d3.select("#legend").transition().duration(1000).style("opacity", 0)
     };
