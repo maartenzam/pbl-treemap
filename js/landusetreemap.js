@@ -64,7 +64,6 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
   })
 
   function draw(data, width, height, ratio){
-    let switched = document.getElementById("switch").checked;
 
     var treemap = d3.treemap()
       .size([width, height])
@@ -86,7 +85,7 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
     treemap(root);
 
     let productData = root.children[0].children.concat(root.children[1].children);
-    
+    console.log(productData);
     //Lower level divs
     viz
       .selectAll(".node.low")
@@ -106,8 +105,9 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
         tooltip
             .html(function(){
                 return `<h2>${catnamen[d.parent.data.key]}</h2>
-                <p>Locatie: ${d.data.key}</p>
-                <p>Landgebruik: ${d.data.value} m2/persoon/jaar</p>`;
+                <p>NL: ${d.parent.data.values[2].value}</p>
+                <p>EU: ${d.parent.data.values[1].value}</p>
+                <p>Buiten EU: ${d.parent.data.values[0].value}</p>`;
             })
             .transition()		
             .duration(200)		
@@ -126,7 +126,7 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
         tooltip.transition()		
             .duration(500)		
             .style("opacity", 0);	
-    });
+      });
 
     //Higher level divs
     let highNodes = viz.selectAll(".node.high")
@@ -139,6 +139,7 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
         .style("width", (d) => d.x1 - d.x0 + "px")
         .style("height", (d) => d.y1 - d.y0 + "px")
         .style("background-color", (d) => colors(d.parent.data.key + "-EU"));
+      highNodes.append("div").attr("class", "node-label").text((d) => Math.round(d.value));
     
     //Icons
     const iconSize = 160;
