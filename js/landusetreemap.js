@@ -71,11 +71,26 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
     
     treemap(root);
 
+    let productData = root.children[0].children.concat(root.children[1].children);
+    console.log(productData);
+
+    //Higher level divs
+    let highNodes = viz.selectAll(".node.high")
+      .data(productData)
+      .enter().append("div")
+      .attr("class", "node high")
+      .attr("id", (d) => d.data.key)
+      .style("left", (d) => d.x0 + "px")
+      .style("top", (d) => d.y0 + "px")
+      .style("width", (d) => d.x1 - d.x0 + "px")
+      .style("height", (d) => d.y1 - d.y0 + "px")
+      .style("background", (d) => colors(d.parent.data.key + "-EU"));
+
     viz
-      .selectAll(".node")
+      .selectAll(".node.low")
       .data(root.leaves())
       .enter().append("div")
-      .attr("class", "node")
+      .attr("class", "node low")
       .style("left", (d) => d.x0 + "px")
       .style("top", (d) => d.y0 + "px")
       .style("width", (d) => d.x1 - d.x0 + "px")
@@ -83,6 +98,10 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
       .style("background", (d) => {
           if(switched){return colors(dierplant[d.parent.data.key] + "-" + d.data.key);}
           else{return colors(dierplant[d.parent.data.key] + "-EU");}
+      })
+      .style("opacity", function(){
+        if(switched){ return 1; }
+        else{ return 0; }
       })
       .on("mouseover", function(d) {
         d3.select(this)
@@ -157,7 +176,7 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
       .style("pointer-events", "none");*/
     
     //Icons
-    /*const iconSize = 160;
+    const iconSize = 160;
     const iconMargin = 20;
     function fitIcon(d){
         let size = iconSize;
@@ -174,16 +193,17 @@ d3.csv("data/treemapdata-2018-12-17.csv").then(function(data){
         if(d.y1 - d.y0 < 10 || d.x1 - d.x0 < 10){newSize = 0; }
         return newSize;
     }
-        viz.selectAll("image").data(root.children)
-            .enter().append("image")
-            .attr("href", (d) => "icons/" + d.data.key + ".svg")
-            .attr("height", (d) => fitIcon(d))
-            .attr("width", (d) => fitIcon(d))
-            .attr("transform", (d) => `translate(${d.x0 + (d.x1 - d.x0)/ 2 - fitIcon(d)/2}, ${d.y0 + (d.y1 - d.y0)/ 2 - fitIcon(d)/2})`);
-        if(switched){
+    highNodes
+        .append("span").attr("class", "imghelper");
+    highNodes.append("img")
+        .attr("src", (d) => "icons/" + d.data.key + ".svg")
+        .style("height", (d) => fitIcon(d) + "px")
+        .style("width", (d) => fitIcon(d) + "px");
+        
+    if(switched){
           d3.select("#legend").transition().duration(450).style("opacity", 1)
         }
-        else{d3.select("#legend").transition().duration(450).style("opacity", 0);}*/
+    else{d3.select("#legend").transition().duration(450).style("opacity", 0);}
   }
 
   draw(data, document.getElementById("width").value, document.getElementById("height").value, document.getElementById("ratio").value);
