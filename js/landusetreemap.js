@@ -1,16 +1,16 @@
-let width = 960;
-let height = 600;
-let ratio = 2;
+var width = 960;
+var height = 600;
+var ratio = 2;
   
-let viz = d3.select("#viz")
+var viz = d3.select("#viz")
   .style("width", width + "px")
   .style("height", height + "px");
 
-const colors = d3.scaleOrdinal()
+var colors = d3.scaleOrdinal()
     .range(["#9CCEF3", "#009CDF", "#0087BE", "#CFCF9F", "#B8B972", "#A2A448"])
     .domain(["Dierlijk-Buiten EU", "Dierlijk-EU", "Dierlijk-NL", "Plantaardig-Buiten EU", "Plantaardig-EU", "Plantaardig-NL"]);
 
-const dierplant = {
+var dierplant = {
     "rundvlees": "Dierlijk",
     "varkensvlees": "Dierlijk",
     "zuivel": "Dierlijk",
@@ -24,7 +24,7 @@ const dierplant = {
     "vegi": "Plantaardig"
 }
 
-const graspercs = {
+var graspercs = {
   "rundvlees": 73,
   "varkensvlees": 0,
   "zuivel": 53.92,
@@ -38,7 +38,7 @@ const graspercs = {
   "vegi": 0
 }
 
-const catnamen = {
+var catnamen = {
   "rundvlees": "Rundvlees",
   "varkensvlees": "Varkensvlees",
   "zuivel": "Zuivel",
@@ -70,7 +70,7 @@ var tooltip = d3.select("body").append("div")
       .paddingOuter(3)
       .tile(d3.treemapSquarify.ratio(ratio));
 
-    let nest = d3.nest()
+    var nest = d3.nest()
       .key(function(d){ return d.Categorie; })
       .key(function(d){ return d.Product; })
       .key(function(d){ return d.Locatie; })
@@ -78,13 +78,13 @@ var tooltip = d3.select("body").append("div")
         return d3.sum(leaves, function(d) {return parseFloat(d.oppervlakte);})
       });
     
-    let root = d3.hierarchy({values: nest.entries(data)},function(d){ return d.values; })
+    var root = d3.hierarchy({values: nest.entries(data)},function(d){ return d.values; })
       .sum(function(d){ return d.value; })
       .sort(function(a, b) { return b.height - a.height || b.value - a.value; });
     
     treemap(root);
 
-    let productData = root.children[0].children.concat(root.children[1].children);
+    var productData = root.children[0].children.concat(root.children[1].children);
 
     //Lower level divs
     viz
@@ -126,7 +126,7 @@ var tooltip = d3.select("body").append("div")
       });
 
     //Higher level divs
-    let highNodes = viz.selectAll(".node.high")
+    var highNodes = viz.selectAll(".node.high")
         .data(productData)
         .enter().append("div")
         .attr("class", "node high")
@@ -139,19 +139,19 @@ var tooltip = d3.select("body").append("div")
       highNodes.append("div").attr("class", "node-label").text(function(d) { return Math.round(d.value); });
     
     //Icons
-    const iconSize = 160;
-    const iconMargin = 20;
+    var iconSize = 160;
+    var iconMargin = 20;
     function fitIcon(d){
-        let size = iconSize;
-        let heightSize = iconSize;
-        let widthSize = iconSize;
+        var size = iconSize;
+        var heightSize = iconSize;
+        var widthSize = iconSize;
         if(iconSize > d.y1 - d.y0){
             heightSize = d.y1 - d.y0 - 2*iconMargin;
         }
         if(iconSize > d.x1 - d.x0){
             widthSize = d.x1 - d.x0 - 2*iconMargin;
         }
-        let newSize = d3.min([size, heightSize, widthSize]);
+        var newSize = d3.min([size, heightSize, widthSize]);
         if(newSize < 20){ newSize = 20; }
         if(d.y1 - d.y0 < 10 || d.x1 - d.x0 < 10){newSize = 0; }
         return newSize;
@@ -170,13 +170,13 @@ var tooltip = d3.select("body").append("div")
             //check if horizontal or vertical
             if((d.x1 - d.x0)/(d.y1 - d.y0) < 1){ return (d.x1 - d.x0) + "px"; }
             else{
-              let grasperc = graspercs[d.data.key];
+              var grasperc = graspercs[d.data.key];
               return ((d.x1 - d.x0)*grasperc/100) + "px";
             }
           })
           .style("height", function(d){
             if((d.x1 - d.x0)/(d.y1 - d.y0) < 1){
-              let grasperc = graspercs[d.data.key];
+              var grasperc = graspercs[d.data.key];
               return ((d.y1 - d.y0)*grasperc/100) + "px";
             }
             else{ return (d.y1 - d.y0) + "px"; }
@@ -205,9 +205,9 @@ var tooltip = d3.select("body").append("div")
 
   d3.selectAll(".parameter")
     .on("change", function(){
-      let width = document.getElementById("width").value;
-      let height = document.getElementById("height").value;
-      let ratio = document.getElementById("ratio").value;
+      var width = document.getElementById("width").value;
+      var height = document.getElementById("height").value;
+      var ratio = document.getElementById("ratio").value;
       viz.selectAll("*").remove();
       d3.select(("#viz")).style("width", width + "px").style("height", height + "px");
       draw(data, width, height, ratio);
