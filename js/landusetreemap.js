@@ -105,8 +105,8 @@ var tooltip = d3.select("body").append("div")
       .style("width", function(d) { return d.x1 - d.x0 + "px"})
       .style("height", function(d) { return d.y1 - d.y0 + "px"})
       .style("background", function(d) { return colors(dierplant[d.parent.data.key] + "-" + d.data.key)})
-      .style("opacity", 0)
-      .on("mouseover", function(d) {
+      .style("opacity", 0);
+      /*.on("mouseover", function(d) {
         d3.select(this)
             .style("stroke", "#00374D")
             .style("stroke-width", 1);
@@ -131,7 +131,7 @@ var tooltip = d3.select("body").append("div")
         tooltip.transition()		
             .duration(500)		
             .style("opacity", 0);	
-      });
+      });*/
 
     //Higher level divs
     var highNodes = viz.selectAll(".node.high")
@@ -143,8 +143,37 @@ var tooltip = d3.select("body").append("div")
         .style("top", function(d) { return d.y0 + "px"; })
         .style("width", function(d) { return d.x1 - d.x0 + "px"; })
         .style("height", function(d) { return d.y1 - d.y0 + "px"; })
-        .style("background-color", function(d) { return colors(d.parent.data.key + "-EU"); });
-      highNodes.append("div").attr("class", "node-label").text(function(d) { return Math.round(d.value); });
+        .style("background-color", function(d) { return colors(d.parent.data.key + "-EU"); })
+        .on("mouseover", function(d) {
+          d3.select(this)
+              .style("stroke", "#00374D")
+              .style("stroke-width", 1);
+          tooltip
+              .html(function(){
+                  return "<h2>" + catnamen[d.data.key] + "</h2><p>Bouwland: " + Math.round(d.value * (100 - graspercs[d.data.key])/100) + "</p><p>Grasland: " + Math.round(d.value * graspercs[d.data.key]/100) + "</p>";
+              })
+              .transition()		
+              .duration(200)		
+              .style("opacity", 1)			
+              .style("left", (d3.event.pageX + 28) + "px")		
+              .style("top", (d3.event.pageY - 28) + "px");	
+          })
+          .on("mousemove", function(d) {		
+              tooltip	
+                  .style("left", (d3.event.pageX + 28) + "px")		
+                  .style("top", (d3.event.pageY - 28) + "px");	
+              })					
+        .on("mouseout", function(d) {	
+          d3.select(this)
+              .style("stroke-width", 0);	
+          tooltip.transition()		
+              .duration(500)		
+              .style("opacity", 0);	
+        });
+
+      highNodes.append("div")
+        .attr("class", "node-label")
+        .text(function(d) { return Math.round(d.value); });
     
     //Icons
     var iconSize = 160;
