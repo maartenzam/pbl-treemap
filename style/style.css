@@ -42,7 +42,8 @@
 }
 
 body {
-  font-family: "Sans";
+	font-family: "Sans";
+	color: #2D6D96;
 }
 
 #legend {
@@ -51,21 +52,27 @@ body {
 
 .legend-column {
     display: inline-block;
-    font-weight: bold;
     margin-left: 6px;
-    margin-right: 20px;
+		margin-right: 20px;
+		width: 100px;
 }
-.legend-column p {
+
+.legend-column p.legend-title {
+		font-weight: bold;
     margin-bottom: 8px;
 }
 
 .legend-item {
-    color: white;
-    padding: 10px;
-    width: 70px;
-    text-align: center;
-    display: inline-block;
-    margin: 0;
+	position: relative;
+}
+
+.legend-item div{
+	display: inline-block;
+}
+
+.legend-swatch {
+		width: 20px;
+		height: 20px;
 }
 
 .plant-nl {
@@ -78,7 +85,6 @@ body {
 
 .plant-buiten {
     background-color: #CFCF9F;
-    color: #000000;
 }
 
 .dier-nl {
@@ -91,7 +97,34 @@ body {
 
 .dier-buiten {
     background-color: #9CCEF3;
-    color: #000000;
+}
+
+.grasland, .bouwland {
+	background-color: #9D9D9C;
+	position: relative;
+}
+
+.legend-swatch.node.grass {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	opacity: 0.75;
+	background-image: repeating-linear-gradient(
+		45deg, transparent, transparent 6px, rgba(255,255,255,.5) 12px, rgba(255,255,255,.5) 12px
+		);
+}
+
+.legend-column.origin {
+	opacity: 0;
+}
+
+.legend-label {
+	height: 20px;
+	line-height: 20px;
+	position: absolute;
+	top: 0px;
+	width: 100px;
+	padding-left: 4px;
 }
 
 div.tooltip {	
@@ -187,10 +220,6 @@ svg image {
   
   .slider.round:before {
 	border-radius: 50%;
-  } 
-
-  #legend {
-	  opacity: 0;
   }
 
   #viz {
@@ -198,9 +227,9 @@ svg image {
   }
 
   .node {
-	box-sizing: border-box;
-	position: absolute;
-	overflow: hidden;
+		box-sizing: border-box;
+		position: absolute;
+		overflow: hidden;
   }
 
   .node.high {

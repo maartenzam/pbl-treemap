@@ -20,18 +20,55 @@
   </div>
 
   <div id="legend">
-    <div class="legend-column">
-        <p>Dierlijk</p>
-        <div  class="legend-item dier-nl">Nederland</div>
-        <div class="legend-item dier-eu">EU</div>
-        <div class="legend-item dier-buiten">Buiten EU</div>
+    <div class="legend-column origin">
+        <p class="legend-title">Dierlijk</p>
+        <div class="legend-item">
+          <div class="legend-swatch dier-nl"></div>
+          <div class="legend-label">Nederland</div>
+        </div>
+        <div class="legend-item">
+          <div class="legend-swatch dier-eu"></div>
+          <div class="legend-label">EU</div>
+        </div>
+        <div class="legend-item">
+            <div class="legend-swatch dier-buiten"></div>
+            <div class="legend-label">Buiten EU</div>
+        </div>    
     </div>
-    <div class="legend-column">
-      <p>Plantaardig</p>
-      <div  class="legend-item plant-nl">Nederland</div>
-      <div class="legend-item plant-eu">EU</div>
-      <div class="legend-item plant-buiten">Buiten EU</div>
+
+    <div class="legend-column origin">
+      <p class="legend-title">Plantaardig</p>
+      <div class="legend-item">
+          <div class="legend-swatch plant-nl"></div>
+          <div class="legend-label">Nederland</div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-swatch plant-eu"></div>
+        <div class="legend-label">EU</div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-swatch plant-buiten"></div>
+        <div class="legend-label">Buiten EU</div>
+      </div>
     </div>
+
+    <div class="legend-column landuse">
+        <p class="legend-title">Landgebruik</p>
+        <div class="legend-item">
+          <div class="legend-swatch grasland">
+            <div class="legend-swatch node grass"></div>
+          </div>
+          <div class="legend-label">Grasland</div>
+        </div>
+        <div class="legend-item">
+          <div class="legend-swatch bouwland"></div>
+          <div class="legend-label">Bouwland</div>
+        </div>
+        <div class="legend-item">
+            <div class="legend-swatch" style="background-color: white;"></div>
+        </div>  
+    </div>
+
   </div>
 
   <div id="viz">

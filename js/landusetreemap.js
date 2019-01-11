@@ -230,13 +230,15 @@ var tooltip = d3.select("body").append("div")
       d3.selectAll(".node.low").transition().duration(1000).style("opacity", 1);
       d3.selectAll(".node.high").transition().duration(1000).style("background-color", "rgba(0,0,0,0)");
       d3.selectAll(".node.grass").transition().duration(1000).style("opacity", 0);
-      d3.select("#legend").transition().duration(1000).style("opacity", 1)
+      d3.selectAll(".legend-column.origin").transition().duration(1000).style("opacity", 1);
+      d3.select(".legend-column.landuse").transition().duration(1000).style("opacity", 0);
     };
     if(!document.getElementById("switch").checked){
       d3.selectAll(".node.low").transition().duration(1000).style("opacity", 0);
       d3.selectAll(".node.high").transition().duration(1000).style("background-color", function(d) { return colors(d.parent.data.key + "-EU"); });
       d3.selectAll(".node.grass").transition().duration(1000).style("opacity", 0.4);
-      d3.select("#legend").transition().duration(1000).style("opacity", 0)
+      d3.selectAll(".legend-column.origin").transition().duration(1000).style("opacity", 0);
+      d3.select(".legend-column.landuse").transition().duration(1000).style("opacity", 1)
     };
   })
 
