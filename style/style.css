@@ -236,7 +236,12 @@ svg image {
 	  border:3px solid white;
 	  text-align: center;
 	  white-space: nowrap;
-  }
+	}
+	
+	.node.low {
+		text-align: center;
+	  white-space: nowrap;
+	}
 
   .node.grass {
 	opacity: 0.4;
@@ -251,7 +256,7 @@ svg image {
 	vertical-align: middle;
 }
 
-  .node.high img {
+  .node.high img, .node.low img {
 	  vertical-align: middle;
   }
 

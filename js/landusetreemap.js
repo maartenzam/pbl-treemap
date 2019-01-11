@@ -71,13 +71,6 @@ var tooltip = d3.select("body").append("div")
       d.percgras = +d.Percgras;
     })
 
-  function draw(data, width, height, ratio){
-
-    var treemap = d3.treemap()
-      .size([width, height])
-      .paddingOuter(3)
-      .tile(d3.treemapSquarify.ratio(ratio));
-
     var nest = d3.nest()
       .key(function(d){ return d.Categorie; })
       .key(function(d){ return d.Product; })
@@ -89,17 +82,46 @@ var tooltip = d3.select("body").append("div")
     var root = d3.hierarchy({values: nest.entries(data)},function(d){ return d.values; })
       .sum(function(d){ return d.value; })
       .sort(function(a, b) { return b.height - a.height || b.value - a.value; });
+
+    var nestOrigin = d3.nest()
+      .key(function(d){ return d.Locatie; })
+      .key(function(d){ return d.Categorie; })
+      .key(function(d){ return d.Product; })
+      .rollup(function(leaves) {
+        return d3.sum(leaves, function(d) {return parseFloat(d.oppervlakte);})
+      });
+    var rootOrigin = d3.hierarchy({values: nestOrigin.entries(data)},function(d){ return d.values; })
+      .sum(function(d){ return d.value; })
+      .sort(function(a, b) { return b.height - a.height || b.value - a.value; });
+
+  function draw(data, width, height, ratio){
+
+    var treemap = d3.treemap()
+      .size([width, height])
+      .paddingOuter(3)
+      .tile(d3.treemapSquarify.ratio(ratio));
     
     treemap(root);
+    
+    var treemapOrigin = d3.treemap()
+      .size([width, height])
+      .paddingOuter(3)
+      .paddingInner(1)
+      .tile(d3.treemapSquarify.ratio(1));
+
+    treemapOrigin(rootOrigin);
 
     var productData = root.children[0].children.concat(root.children[1].children);
 
     //Lower level divs
-    viz
+    var lowNodes = viz
       .selectAll(".node.low")
       .data(root.leaves())
       .enter().append("div")
       .attr("class", "node low")
+      .attr("id", function(d){
+        return d.data.key.replace(" ", "") + "-" + d.parent.data.key.replace(/ /g, "").replace("&", "") + "-" + d.parent.parent.data.key;
+      })
       .style("left", function(d) { return d.x0 + "px"})
       .style("top", function(d) { return d.y0 + "px"})
       .style("width", function(d) { return d.x1 - d.x0 + "px"})
@@ -220,27 +242,48 @@ var tooltip = d3.select("body").append("div")
           })
           .style("background-color", "transparent");
 
+          d3.select("#switch").on("change", function(){
+            if(document.getElementById("switch").checked){
+              d3.selectAll(".node.low").transition().duration(1000).style("opacity", 1);
+              d3.selectAll(".node.high").transition().duration(1000).style("background-color", "rgba(0,0,0,0)");
+              d3.selectAll(".node.grass, .node.high img").transition().duration(1000).style("opacity", 0);
+              d3.selectAll(".legend-column.origin").transition().duration(1000).style("opacity", 1);
+              d3.select(".legend-column.landuse").transition().duration(1000).style("opacity", 0);
+
+              lowNodes
+                .append("span").attr("class", "imghelper");
+              lowNodes.append("img")
+                .attr("src", function(d) { return "icons/" + d.parent.data.key + ".svg"; })
+                .style("height", function(d) { return fitIcon(d) + "px"; })
+                .style("width", function(d) { return fitIcon(d) + "px"; });
+        
+              rootOrigin.leaves().forEach(function(el){
+                let id = el.parent.parent.data.key.replace(" ", "") + "-" + el.data.key.replace(/ /g, "").replace("&", "") + "-" + el.parent.data.key;
+        
+                d3.select("#" + id).transition()
+                  .delay(1000)
+                  .duration(1000)
+                  .style("left", el.x0 + "px")
+                  .style("top", el.y0 + "px")
+                  .style("width", el.x1 - el.x0 + "px")
+                  .style("height", el.y1 - el.y0 + "px");
+              })
+            };
+
+        
+            if(!document.getElementById("switch").checked){
+              d3.selectAll(".node.low").transition().duration(1000).style("opacity", 0);
+              d3.selectAll(".node.high").transition().duration(1000).style("background-color", function(d) { return colors(d.parent.data.key + "-EU"); });
+              d3.selectAll(".node.grass").transition().duration(1000).style("opacity", 0.4);
+              d3.selectAll(".legend-column.origin").transition().duration(1000).style("opacity", 0);
+              d3.select(".legend-column.landuse").transition().duration(1000).style("opacity", 1)
+            };
+          })
+
   }
 
   //draw(data, document.getElementById("width").value, document.getElementById("height").value, document.getElementById("ratio").value);
   draw(data, 960, 600, 2);
-
-  d3.select("#switch").on("change", function(){
-    if(document.getElementById("switch").checked){
-      d3.selectAll(".node.low").transition().duration(1000).style("opacity", 1);
-      d3.selectAll(".node.high").transition().duration(1000).style("background-color", "rgba(0,0,0,0)");
-      d3.selectAll(".node.grass").transition().duration(1000).style("opacity", 0);
-      d3.selectAll(".legend-column.origin").transition().duration(1000).style("opacity", 1);
-      d3.select(".legend-column.landuse").transition().duration(1000).style("opacity", 0);
-    };
-    if(!document.getElementById("switch").checked){
-      d3.selectAll(".node.low").transition().duration(1000).style("opacity", 0);
-      d3.selectAll(".node.high").transition().duration(1000).style("background-color", function(d) { return colors(d.parent.data.key + "-EU"); });
-      d3.selectAll(".node.grass").transition().duration(1000).style("opacity", 0.4);
-      d3.selectAll(".legend-column.origin").transition().duration(1000).style("opacity", 0);
-      d3.select(".legend-column.landuse").transition().duration(1000).style("opacity", 1)
-    };
-  })
 
   d3.selectAll(".parameter")
     .on("change", function(){
