@@ -174,19 +174,20 @@ var tooltip = d3.select("body").append("div")
     
     //Icons
     var iconSize = 160;
-    var iconMargin = 20;
+    //var iconMargin = 20;
+    var iconMargin = 0;
     function fitIcon(d){
         var size = iconSize;
         var heightSize = iconSize;
         var widthSize = iconSize;
         if(iconSize > d.y1 - d.y0){
-            heightSize = d.y1 - d.y0 - 2*iconMargin;
+            heightSize = (d.y1 - d.y0) * (1 - 2*iconMargin);// - 2*iconMargin;
         }
         if(iconSize > d.x1 - d.x0){
-            widthSize = d.x1 - d.x0 - 2*iconMargin;
+            widthSize = (d.x1 - d.x0) * (1 - 2*iconMargin);// - 2*iconMargin;
         }
         var newSize = d3.min([size, heightSize, widthSize]);
-        if(newSize < 20){ newSize = 20; }
+        //if(newSize < 20){ newSize = 20; }
         if(d.y1 - d.y0 < 10 || d.x1 - d.x0 < 10){newSize = 0; }
         return newSize;
     }
