@@ -98,7 +98,7 @@ var tooltip = d3.select("body").append("div")
 
     var treemap = d3.treemap()
       .size([width, height])
-      .paddingOuter(0)
+      .paddingOuter(1)
       .paddingInner(1)
       .tile(d3.treemapSquarify.ratio(ratio));
     
@@ -106,10 +106,9 @@ var tooltip = d3.select("body").append("div")
     
     var treemapOrigin = d3.treemap()
       .size([width, height])
-      .paddingOuter(0)
+      .paddingOuter(1)
       .paddingInner(1)
-      //.tile(d3.treemapSliceDice);
-      .tile(d3.treemapSquarify.ratio(ratio));
+      .tile(d3.treemapSquarify.ratio(1));
 
     treemapOrigin(rootOrigin);
 
@@ -130,32 +129,6 @@ var tooltip = d3.select("body").append("div")
       .style("height", function(d) { return d.y1 - d.y0 + "px"})
       .style("background", function(d) { return colors(dierplant[d.parent.data.key] + "-" + d.data.key)})
       .style("opacity", 0);
-      /*.on("mouseover", function(d) {
-        d3.select(this)
-            .style("stroke", "#00374D")
-            .style("stroke-width", 1);
-        tooltip
-            .html(function(){
-                return "<h2>" + catnamen[d.parent.data.key] + "</h2><p>NL: " + d.parent.data.values[2].value + "</p><p>EU: " + d.parent.data.values[1].value + "</p><p>Buiten EU: " + d.parent.data.values[0].value + "</p>";
-            })
-            .transition()		
-            .duration(200)		
-            .style("opacity", 1)			
-            .style("left", (d3.event.pageX + 28) + "px")		
-            .style("top", (d3.event.pageY - 28) + "px");	
-        })
-        .on("mousemove", function(d) {		
-            tooltip	
-                .style("left", (d3.event.pageX + 28) + "px")		
-                .style("top", (d3.event.pageY - 28) + "px");	
-            })					
-      .on("mouseout", function(d) {	
-        d3.select(this)
-            .style("stroke-width", 0);	
-        tooltip.transition()		
-            .duration(500)		
-            .style("opacity", 0);	
-      });*/
 
     //Higher level divs
     var highNodes = viz.selectAll(".node.high")
@@ -247,11 +220,12 @@ var tooltip = d3.select("body").append("div")
           var animDuration = 2000;
 
           d3.select("#switch").on("change", function(){
+            d3.select(this).attr("disabled", true);
+
             if(document.getElementById("switch").checked){
               lowNodes.transition().duration(animDuration).style("opacity", 1);
               highNodes.transition().duration(animDuration)
                 .style("background-color", "rgba(0,0,0,0)");
-                //.style("border-width", "0px");
               d3.selectAll(".node.grass, .node.high img").transition().duration(animDuration).style("opacity", 0);
               d3.selectAll(".legend-column.origin").transition().duration(animDuration).style("opacity", 1);
               d3.select(".legend-column.landuse").transition().duration(animDuration).style("opacity", 0);
@@ -282,8 +256,7 @@ var tooltip = d3.select("body").append("div")
                         .style("stroke-width", 1);
                     tooltip
                         .html(function(){
-                          //TODO: cijfers tooltip
-                            return "<h2>" + catnamen[d.parent.data.key] + "</h2><p>" + d.data.key + ": " + "</p>";
+                            return "<h2>" + catnamen[d.parent.data.key] + "</h2><p>" + d.data.key + ": " + d.value +  "</p>";
                         })
                         .transition()		
                         .duration(200)		
@@ -310,6 +283,11 @@ var tooltip = d3.select("body").append("div")
                   .style("top", el.y0 + "px")
                   .style("width", el.x1 - el.x0 + "px")
                   .style("height", el.y1 - el.y0 + "px");
+
+                  //Enable switch again if all animations have ended
+                  if(ind == rootOrigin.leaves().length - 1){
+                    d3.select("#switch").attr("disabled", null);
+                  }
               })
             };
 
@@ -332,6 +310,8 @@ var tooltip = d3.select("body").append("div")
                 .on("end", function(){
                   d3.select(this).select("span.imghelper").remove();
                   d3.select(this).select("img").remove();
+                  //Enable switch again if all animations have ended
+                  d3.select("#switch").attr("disabled", null);
                 });
               
               d3.selectAll(".node.high").transition()
