@@ -98,16 +98,18 @@ var tooltip = d3.select("body").append("div")
 
     var treemap = d3.treemap()
       .size([width, height])
-      .paddingOuter(3)
+      .paddingOuter(0)
+      .paddingInner(1)
       .tile(d3.treemapSquarify.ratio(ratio));
     
     treemap(root);
     
     var treemapOrigin = d3.treemap()
       .size([width, height])
-      .paddingOuter(3)
+      .paddingOuter(0)
       .paddingInner(1)
-      .tile(d3.treemapSquarify.ratio(1));
+      //.tile(d3.treemapSliceDice);
+      .tile(d3.treemapSquarify.ratio(ratio));
 
     treemapOrigin(rootOrigin);
 
@@ -242,13 +244,18 @@ var tooltip = d3.select("body").append("div")
           })
           .style("background-color", "transparent");
 
+          var animDuration = 2000;
+
           d3.select("#switch").on("change", function(){
             if(document.getElementById("switch").checked){
-              d3.selectAll(".node.low").transition().duration(1000).style("opacity", 1);
-              d3.selectAll(".node.high").transition().duration(1000).style("background-color", "rgba(0,0,0,0)");
-              d3.selectAll(".node.grass, .node.high img").transition().duration(1000).style("opacity", 0);
-              d3.selectAll(".legend-column.origin").transition().duration(1000).style("opacity", 1);
-              d3.select(".legend-column.landuse").transition().duration(1000).style("opacity", 0);
+              lowNodes.transition().duration(animDuration).style("opacity", 1);
+              highNodes.transition().duration(animDuration)
+                .style("background-color", "rgba(0,0,0,0)");
+                //.style("border-width", "0px");
+              d3.selectAll(".node.grass, .node.high img").transition().duration(animDuration).style("opacity", 0);
+              d3.selectAll(".legend-column.origin").transition().duration(animDuration).style("opacity", 1);
+              d3.select(".legend-column.landuse").transition().duration(animDuration).style("opacity", 0);
+              d3.selectAll(".node-label").transition().duration(animDuration).style("opacity", 0);
 
               lowNodes
                 .append("span").attr("class", "imghelper");
@@ -257,12 +264,48 @@ var tooltip = d3.select("body").append("div")
                 .style("height", function(d) { return fitIcon(d) + "px"; })
                 .style("width", function(d) { return fitIcon(d) + "px"; });
         
-              rootOrigin.leaves().forEach(function(el){
+              rootOrigin.leaves().forEach(function(el, ind){
                 let id = el.parent.parent.data.key.replace(" ", "") + "-" + el.data.key.replace(/ /g, "").replace("&", "") + "-" + el.parent.data.key;
+
+                d3.select("#" + id + " img")
+                  .transition()
+                  .delay(animDuration + ind*50)
+                  .duration(animDuration)
+                  .style("height", fitIcon(el) + "px")
+                  .style("width", fitIcon(el) + "px");
         
-                d3.select("#" + id).transition()
-                  .delay(1000)
-                  .duration(1000)
+                d3.select("#" + id)
+                  .raise()
+                  .on("mouseover", function(d) {
+                    d3.select(this)
+                        .style("stroke", "#00374D")
+                        .style("stroke-width", 1);
+                    tooltip
+                        .html(function(){
+                          //TODO: cijfers tooltip
+                            return "<h2>" + catnamen[d.parent.data.key] + "</h2><p>" + d.data.key + ": " + "</p>";
+                        })
+                        .transition()		
+                        .duration(200)		
+                        .style("opacity", 1)			
+                        .style("left", (d3.event.pageX + 28) + "px")		
+                        .style("top", (d3.event.pageY - 28) + "px");	
+                    })
+                    .on("mousemove", function(d) {		
+                        tooltip	
+                            .style("left", (d3.event.pageX + 28) + "px")		
+                            .style("top", (d3.event.pageY - 28) + "px");	
+                        })					
+                  .on("mouseout", function(d) {	
+                    d3.select(this)
+                        .style("stroke-width", 0);	
+                    tooltip.transition()		
+                        .duration(500)		
+                        .style("opacity", 0);	
+                  })
+                  .transition()
+                  .delay(animDuration  + ind*50)
+                  .duration(animDuration)
                   .style("left", el.x0 + "px")
                   .style("top", el.y0 + "px")
                   .style("width", el.x1 - el.x0 + "px")
@@ -272,18 +315,52 @@ var tooltip = d3.select("body").append("div")
 
         
             if(!document.getElementById("switch").checked){
-              d3.selectAll(".node.low").transition().duration(1000).style("opacity", 0);
-              d3.selectAll(".node.high").transition().duration(1000).style("background-color", function(d) { return colors(d.parent.data.key + "-EU"); });
-              d3.selectAll(".node.grass").transition().duration(1000).style("opacity", 0.4);
-              d3.selectAll(".legend-column.origin").transition().duration(1000).style("opacity", 0);
-              d3.select(".legend-column.landuse").transition().duration(1000).style("opacity", 1)
+              lowNodes.lower().transition()
+                .duration(animDuration)
+                .style("left", function(d) { return d.x0 + "px"})
+                .style("top", function(d) { return d.y0 + "px"})
+                .style("width", function(d) { return d.x1 - d.x0 + "px"})
+                .style("height", function(d) { return d.y1 - d.y0 + "px"});
+
+              lowNodes.select("img")
+                .transition()
+                .duration(animDuration)
+                .style("height", function(d){return fitIcon(d) + "px";})
+                .style("width", function(d){return fitIcon(d) + "px";})
+              
+              lowNodes.transition().delay(animDuration).duration(animDuration).style("opacity", 0)
+                .on("end", function(){
+                  d3.select(this).select("span.imghelper").remove();
+                  d3.select(this).select("img").remove();
+                });
+              
+              d3.selectAll(".node.high").transition()
+                .delay(animDuration)
+                .duration(animDuration)
+                .style("background-color", function(d) { return colors(d.parent.data.key + "-EU"); });
+              d3.selectAll(".node.grass").transition()
+                .delay(animDuration)
+                .duration(animDuration)
+                .style("opacity", 0.4);
+              d3.selectAll(".node.high img").transition()
+                .delay(animDuration)
+                .duration(animDuration).style("opacity", 1);
+              d3.selectAll(".legend-column.origin").transition()
+                .duration(animDuration)
+                .style("opacity", 0);
+              d3.select(".legend-column.landuse").transition()
+                .duration(animDuration)
+                .style("opacity", 1);
+              d3.selectAll(".node-label").transition()
+                .duration(animDuration)
+                .style("opacity", 1);
             };
           })
 
   }
 
   //draw(data, document.getElementById("width").value, document.getElementById("height").value, document.getElementById("ratio").value);
-  draw(data, 960, 600, 2);
+  draw(data, width, height, 2);
 
   d3.selectAll(".parameter")
     .on("change", function(){
