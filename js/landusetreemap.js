@@ -1,3 +1,4 @@
+//For responsiveness, width should be calculated from the width of the parent container
 var width = 960;
 var height = 600;
 var ratio = 2;
@@ -65,7 +66,7 @@ var tooltip = d3.select("body").append("div")
     .attr("class", "tooltip")				
     .style("opacity", 0);
 
-  d3.csv("data/treemapdata-2018-12-17-dranken.csv", function(data){
+  d3.csv("data/treemapdata-2019-02-13-dranken.csv", function(data){
     data.forEach(function(d){
       d.oppervlakte = +d.Totopp;
       d.percgras = +d.Percgras;
@@ -147,7 +148,7 @@ var tooltip = d3.select("body").append("div")
               .style("stroke-width", 1);
           tooltip
               .html(function(){
-                  return "<h2>" + catnamen[d.data.key] + "</h2><p>Bouwland: " + Math.round(d.value * (100 - graspercs[d.data.key])/100) + "</p><p>Grasland: " + Math.round(d.value * graspercs[d.data.key]/100) + "</p>";
+                  return "<h2>" + catnamen[d.data.key] + "</h2><p>Bouwland: " + Math.round(d.value * (100 - graspercs[d.data.key])/100) + " m²</p><p>Grasland: " + Math.round(d.value * graspercs[d.data.key]/100) + " m²</p>";
               })
               .transition()		
               .duration(200)		
@@ -175,7 +176,7 @@ var tooltip = d3.select("body").append("div")
     //Icons
     var iconSize = 160;
     //var iconMargin = 20;
-    var iconMargin = 0;
+    var iconMargin = 0.20;
     function fitIcon(d){
         var size = iconSize;
         var heightSize = iconSize;
@@ -202,19 +203,22 @@ var tooltip = d3.select("body").append("div")
         highNodes.insert("div", "span")
           .attr("class", "node grass")
           .style("width", function(d){
+            var grasperc = graspercs[d.data.key];
+            return ((d.x1 - d.x0)*grasperc/100) + "px";
             //check if horizontal or vertical
-            if((d.x1 - d.x0)/(d.y1 - d.y0) < 1){ return (d.x1 - d.x0) + "px"; }
-            else{
+            //if((d.x1 - d.x0)/(d.y1 - d.y0) < 1){ return (d.x1 - d.x0) + "px"; }
+            /*else{
               var grasperc = graspercs[d.data.key];
               return ((d.x1 - d.x0)*grasperc/100) + "px";
-            }
+            }*/
           })
           .style("height", function(d){
-            if((d.x1 - d.x0)/(d.y1 - d.y0) < 1){
+            return (d.y1 - d.y0) + "px";
+            /*if((d.x1 - d.x0)/(d.y1 - d.y0) < 1){
               var grasperc = graspercs[d.data.key];
               return ((d.y1 - d.y0)*grasperc/100) + "px";
             }
-            else{ return (d.y1 - d.y0) + "px"; }
+            else{ return (d.y1 - d.y0) + "px"; }*/
           })
           .style("background-color", "transparent");
 
@@ -228,7 +232,7 @@ var tooltip = d3.select("body").append("div")
               highNodes.transition().duration(animDuration)
                 .style("background-color", "rgba(0,0,0,0)");
               d3.selectAll(".node.grass, .node.high img").transition().duration(animDuration).style("opacity", 0);
-              d3.selectAll(".legend-column.origin").transition().duration(animDuration).style("opacity", 1);
+              d3.selectAll(".legend-column.origin .legend-item .legend-label, .legend-swatch.dier-eu, .legend-swatch.dier-buiten, .legend-swatch.plant-eu, .legend-swatch.plant-buiten").transition().duration(animDuration).style("opacity", 1);
               d3.select(".legend-column.landuse").transition().duration(animDuration).style("opacity", 0);
               d3.selectAll(".node-label").transition().duration(animDuration).style("opacity", 0);
 
@@ -257,7 +261,7 @@ var tooltip = d3.select("body").append("div")
                         .style("stroke-width", 1);
                     tooltip
                         .html(function(){
-                            return "<h2>" + catnamen[d.parent.data.key] + "</h2><p>" + d.data.key + ": " + d.value +  "</p>";
+                            return "<h2>" + catnamen[d.parent.data.key] + "</h2><p>" + d.data.key + ": " + Math.round(d.value) +  " m²</p>";
                         })
                         .transition()		
                         .duration(200)		
@@ -326,7 +330,7 @@ var tooltip = d3.select("body").append("div")
               d3.selectAll(".node.high img").transition()
                 .delay(animDuration)
                 .duration(animDuration).style("opacity", 1);
-              d3.selectAll(".legend-column.origin").transition()
+              d3.selectAll(".legend-column.origin .legend-item .legend-label, .legend-swatch.dier-eu, .legend-swatch.dier-buiten, .legend-swatch.plant-eu, .legend-swatch.plant-buiten").transition()
                 .duration(animDuration)
                 .style("opacity", 0);
               d3.select(".legend-column.landuse").transition()

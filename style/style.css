@@ -110,11 +110,16 @@ body {
 	top: 0px;
 	opacity: 0.75;
 	background-image: repeating-linear-gradient(
-		45deg, transparent, transparent 6px, rgba(255,255,255,.5) 12px, rgba(255,255,255,.5) 12px
+		45deg, transparent, transparent 6px, rgba(255,255,255,.8) 12px, rgba(255,255,255,.8) 12px
 		);
 }
 
 .legend-column.origin {
+	opacity: 1;
+}
+
+.legend-column.origin .legend-item .legend-label, .legend-swatch.dier-eu, .legend-swatch.dier-buiten, .legend-swatch.plant-eu, .legend-swatch.plant-buiten
+{
 	opacity: 0;
 }
 
@@ -246,7 +251,7 @@ svg image {
   .node.grass {
 	opacity: 0.4;
 	background-image: repeating-linear-gradient(
-		45deg, transparent, transparent 6px, rgba(255,255,255,.5) 12px, rgba(255,255,255,.5) 12px
+		45deg, transparent, transparent 6px, rgba(255,255,255,.7) 12px, rgba(255,255,255,.7) 12px
 		);
   }
 
