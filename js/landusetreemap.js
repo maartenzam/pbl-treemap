@@ -109,7 +109,8 @@ var tooltip = d3.select("body").append("div")
       .size([width, height])
       .paddingOuter(1)
       .paddingInner(1)
-      .tile(d3.treemapSquarify.ratio(1));
+      .tile(d3.treemapSliceDice);
+      //.tile(d3.treemapSquarify.ratio(1));
 
     treemapOrigin(rootOrigin);
 
