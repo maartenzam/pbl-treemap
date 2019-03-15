@@ -275,4 +275,17 @@ svg image {
 	top: 0px;
 	left: 0px;
 	color: white;
-  }
+	}
+	
+.node-label-high {
+	padding-left: 4px;
+	padding-top: 2px;
+	line-height: 1em;
+	font-size: 14px;
+	font-weight: bold;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	color: white;
+	opacity: 0;
+}

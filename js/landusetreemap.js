@@ -154,12 +154,26 @@ var tooltip = d3.select("body").append("div")
               .transition()		
               .duration(200)		
               .style("opacity", 1)			
-              .style("left", (d3.event.pageX + 28) + "px")		
+              .style("left", function(){
+                if(d3.event.pageX < width/2){
+                  return (d3.event.pageX + 28) + "px"
+                }
+                if(d3.event.pageX > width/2){
+                  return (d3.event.pageX - tooltip.node().getBoundingClientRect().width - 28) + "px"
+                }
+              })		
               .style("top", (d3.event.pageY - 28) + "px");	
           })
           .on("mousemove", function(d) {		
               tooltip	
-                  .style("left", (d3.event.pageX + 28) + "px")		
+                  .style("left", function(){
+                    if(d3.event.pageX < width/2){
+                      return (d3.event.pageX + 28) + "px"
+                    }
+                    if(d3.event.pageX > width/2){
+                      return (d3.event.pageX - tooltip.node().getBoundingClientRect().width - 28) + "px"
+                    }
+                  })		
                   .style("top", (d3.event.pageY - 28) + "px");	
               })					
         .on("mouseout", function(d) {	
@@ -173,6 +187,16 @@ var tooltip = d3.select("body").append("div")
       highNodes.append("div")
         .attr("class", "node-label")
         .text(function(d) { return Math.round(d.value); });
+
+      d3.select("#EU-rundvlees-Dierlijk").append("div")
+        .attr("class", "node-label-high")
+        .text("EU");
+      d3.select("#BuitenEU-rundvlees-Dierlijk").append("div")
+        .attr("class", "node-label-high")
+        .text("Buiten EU");
+      d3.select("#NL-rundvlees-Dierlijk").append("div")
+        .attr("class", "node-label-high")
+        .text("NL");
     
     //Icons
     var iconSize = 160;
@@ -267,12 +291,26 @@ var tooltip = d3.select("body").append("div")
                         .transition()		
                         .duration(200)		
                         .style("opacity", 1)			
-                        .style("left", (d3.event.pageX + 28) + "px")		
+                        .style("left", function(){
+                          if(d3.event.pageX < width/2){
+                            return (d3.event.pageX + 28) + "px"
+                          }
+                          if(d3.event.pageX > width/2){
+                            return (d3.event.pageX - tooltip.node().getBoundingClientRect().width - 28) + "px"
+                          }
+                        })		
                         .style("top", (d3.event.pageY - 28) + "px");	
                     })
                     .on("mousemove", function(d) {		
                         tooltip	
-                            .style("left", (d3.event.pageX + 28) + "px")		
+                            .style("left", function(){
+                              if(d3.event.pageX < width/2){
+                                return (d3.event.pageX + 28) + "px"
+                              }
+                              if(d3.event.pageX > width/2){
+                                return (d3.event.pageX - tooltip.node().getBoundingClientRect().width - 28) + "px"
+                              }
+                            })		
                             .style("top", (d3.event.pageY - 28) + "px");	
                         })					
                   .on("mouseout", function(d) {	
@@ -292,6 +330,7 @@ var tooltip = d3.select("body").append("div")
 
                   //Enable switch again if all animations have ended
                   if(ind == rootOrigin.leaves().length - 1){
+                    d3.selectAll(".node-label-high").transition().delay(5000).style("opacity", 1);
                     d3.select("#switch").attr("disabled", null);
                   }
               })
@@ -299,6 +338,7 @@ var tooltip = d3.select("body").append("div")
 
         
             if(!document.getElementById("switch").checked){
+              d3.selectAll(".node-label-high").transition().delay(500).style("opacity", 0);
               lowNodes.lower().transition()
                 .duration(animDuration)
                 .style("left", function(d) { return d.x0 + "px"})
